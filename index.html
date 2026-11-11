@@ -1,123 +1,703 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENBOYA - Télécommande</title>
+
+<style>
+:root {
+  --bg:#07111b;
+  --panel:#101f2d;
+  --line:#244054;
+  --cyan:#35d9ee;
+  --green:#35e69a;
+  --amber:#ffbd55;
+  --red:#ff5555;
+  --text:#e8f5fb;
+  --muted:#8ba5b5;
+}
+
+* {box-sizing:border-box}
+
+body {
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  background:radial-gradient(ellipse at top,#142b3b 0%,var(--bg) 58%);
+  font-family:"Segoe UI",Arial,sans-serif;
+  letter-spacing:.04em;
+}
+
+button {font:inherit;color:inherit}
+
+.page {
+  width:min(1100px,100%);
+  margin:auto;
+  padding:18px;
+}
+
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid var(--line);
+  padding:8px 2px 16px;
+}
+
+.brand {
+  font-weight:900;
+  font-size:clamp(22px,5vw,34px);
+  letter-spacing:.16em;
+}
+
+.brand span {color:var(--cyan)}
+
+.subtitle {
+  color:var(--muted);
+  font-size:10px;
+  margin-top:4px;
+  letter-spacing:.2em;
+}
+
+.tag {
+  border:1px solid var(--line);
+  color:var(--cyan);
+  padding:7px 10px;
+  border-radius:4px;
+  font-size:10px;
+}
+
+.statusbar {
+  margin:16px 0;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  background:#0b1925;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border-radius:8px;
+}
+
+#status {
+  color:var(--amber);
+  font-size:12px;
+  font-weight:700;
+}
+
+.dot {
+  width:8px;
+  height:8px;
+  display:inline-block;
+  border-radius:50%;
+  background:var(--amber);
+  margin-right:8px;
+}
+
+.connect {
+  border:1px solid var(--cyan);
+  color:var(--cyan);
+  background:#102a38;
+  padding:11px 16px;
+  border-radius:5px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.connect:disabled {
+  opacity:.65;
+  cursor:wait;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:16px;
+}
+
+.panel {
+  border:1px solid var(--line);
+  border-radius:9px;
+  overflow:hidden;
+  background:linear-gradient(145deg,rgba(18,37,52,.97),rgba(8,21,32,.97));
+  box-shadow:0 12px 35px #0005;
+}
+
+.panel-title {
+  padding:12px 15px;
+  border-bottom:1px solid var(--line);
+  color:var(--cyan);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.18em;
+}
+
+.panel-content {padding:16px}
+
+.camera-frame {
+  background:#02070b;
+  border:1px solid #29475a;
+  border-radius:6px;
+  min-height:210px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+
+#camera {
+  width:100%;
+  min-height:210px;
+  max-height:390px;
+  object-fit:contain;
+  display:block;
+}
+
+.camera-note {
+  color:var(--muted);
+  font-size:10px;
+  text-align:center;
+  margin-top:9px;
+  line-height:1.5;
+}
+
+.controls-layout {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  align-items:center;
+}
+
+.pad {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-rows:repeat(3,68px);
+  gap:8px;
+  max-width:340px;
+  margin:auto;
+  touch-action:none;
+  user-select:none;
+}
+
+.direction,.stop {
+  border:1px solid #31566d;
+  border-radius:8px;
+  background:linear-gradient(145deg,#183448,#0b1d2b);
+  color:var(--cyan);
+  font-size:24px;
+  font-weight:900;
+  cursor:pointer;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+.direction:active,.direction.active {
+  background:#15506a;
+  border-color:var(--cyan);
+  color:white;
+}
+
+.stop {
+  grid-column:2;
+  grid-row:2;
+  color:var(--red);
+  border-color:#713b43;
+  font-size:13px;
+}
+
+#forward {grid-column:2;grid-row:1}
+#left {grid-column:1;grid-row:2}
+#right {grid-column:3;grid-row:2}
+#backward {grid-column:2;grid-row:3}
+
+.side-controls {
+  display:grid;
+  gap:14px;
+}
+
+.control-label {
+  color:var(--muted);
+  font-size:10px;
+  margin-bottom:8px;
+  letter-spacing:.16em;
+}
+
+.segmented {
+  display:flex;
+  gap:8px;
+}
+
+.segmented button {
+  flex:1;
+  padding:12px 8px;
+  background:#0a1823;
+  border:1px solid var(--line);
+  border-radius:5px;
+  color:var(--muted);
+  font-weight:800;
+  cursor:pointer;
+}
+
+.segmented button.active {
+  border-color:var(--green);
+  color:var(--green);
+  background:#123329;
+}
+
+.segmented button:disabled,
+input:disabled {
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+.anti-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.anti-state {
+  color:var(--green);
+  font-size:11px;
+  font-weight:800;
+}
+
+.switch {
+  position:relative;
+  display:inline-block;
+  width:48px;
+  height:26px;
+}
+
+.switch input {
+  opacity:0;
+  width:0;
+  height:0;
+}
+
+.slider {
+  position:absolute;
+  inset:0;
+  cursor:pointer;
+  background:#354958;
+  border-radius:20px;
+  transition:.2s;
+}
+
+.slider:before {
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  left:4px;
+  top:4px;
+  border-radius:50%;
+  background:white;
+  transition:.2s;
+}
+
+.switch input:checked + .slider {
+  background:#16865e;
+}
+
+.switch input:checked + .slider:before {
+  transform:translateX(22px);
+}
+
+.gauge-wrap {
+  display:flex;
+  justify-content:center;
+  padding:5px 0 0;
+}
+
+.gauge {width:min(100%,310px)}
+
+.gauge-label {
+  text-align:center;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:-2px;
+  letter-spacing:.18em;
+}
+
+.quick-info {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:14px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.quick-info strong {color:var(--text)}
+
+.footer {
+  text-align:center;
+  color:#587184;
+  font-size:9px;
+  letter-spacing:.18em;
+  padding:22px 0 8px;
+}
+
+#intro {
+  position:fixed;
+  z-index:5;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:#06101a;
+  transition:opacity .7s ease,visibility .7s ease;
+}
+
+#intro.finished {
+  opacity:0;
+  visibility:hidden;
+}
+
+.intro-inner {text-align:center}
+
+.intro-name {
+  font-size:clamp(34px,10vw,68px);
+  font-weight:900;
+  letter-spacing:.22em;
+  color:var(--cyan);
+  text-shadow:0 0 28px #35d9ee66;
+}
+
+.intro-sub {
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:.35em;
+  margin-top:12px;
+}
+
+.intro-line {
+  width:min(250px,65vw);
+  height:2px;
+  background:#20394a;
+  margin:25px auto;
+  overflow:hidden;
+}
+
+.intro-line:after {
+  content:"";
+  display:block;
+  width:40%;
+  height:100%;
+  background:var(--cyan);
+  animation:load 1.8s ease-in-out infinite;
+}
+
+@keyframes load {
+  from {transform:translateX(-110%)}
+  to {transform:translateX(260%)}
+}
+
+@media(max-width:760px) {
+  .page {padding:12px}
+  .grid {grid-template-columns:1fr}
+  .controls-layout {grid-template-columns:1fr}
+  .pad {grid-template-rows:repeat(3,64px);width:min(100%,330px)}
+  .statusbar {align-items:flex-start}
+  .camera-frame,#camera {min-height:180px}
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro">
+  <div class="intro-inner">
+    <div class="intro-name">ENBOYA</div>
+    <div class="intro-sub">REMOTE CONTROL SYSTEM</div>
+    <div class="intro-line"></div>
+    <div class="intro-sub">INITIALISATION...</div>
+  </div>
+</div>
+
+<main class="page">
+
+<header>
+  <div>
+    <div class="brand">EN<span>BOYA</span></div>
+    <div class="subtitle">SYSTÈME DE COMMANDE À DISTANCE</div>
+  </div>
+  <div class="tag">CONTROL // 01</div>
+</header>
+
+<section class="statusbar">
+  <div>
+    <span class="dot" id="statusDot"></span>
+    <span id="status">Bluetooth déconnecté</span>
+  </div>
+  <button class="connect" id="connect">CONNECTER</button>
+</section>
+
+<div class="grid">
+
+<section class="panel">
+  <div class="panel-title">CAMÉRA EMBARQUÉE</div>
+  <div class="panel-content">
+    <div class="camera-frame">
+      <img id="camera"
+        src="http://192.168.1.200:8080/video"
+        alt="Caméra ENBOYA">
+      <div id="cameraError" style="display:none;color:#8ba5b5;font-size:11px;padding:20px;text-align:center">
+        Flux caméra indisponible.
+      </div>
+    </div>
+    <div class="camera-note">FLUX VIDÉO LOCAL</div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-title">INSTRUMENTATION</div>
+  <div class="panel-content">
+
+    <div class="gauge-wrap">
+      <svg class="gauge" viewBox="0 0 320 190">
+        <path d="M38 155 A122 122 0 0 1 282 155"
+          fill="none" stroke="#20394a" stroke-width="8"
+          stroke-linecap="round"/>
+
+        <g id="ticks"></g>
+
+        <line id="needle"
+          x1="160" y1="155" x2="160" y2="52"
+          stroke="#35d9ee" stroke-width="3"
+          stroke-linecap="round"
+          transform="rotate(-90 160 155)"/>
+
+        <circle cx="160" cy="155" r="8" fill="#35d9ee"/>
+
+        <text x="160" y="130" text-anchor="middle"
+          fill="#e8f5fb" font-size="22"
+          font-weight="800" id="speedReadout">50</text>
+
+        <text x="160" y="146" text-anchor="middle"
+          fill="#8ba5b5" font-size="8">VITESSE</text>
+      </svg>
+    </div>
+
+    <div class="gauge-label">TABLEAU DE BORD ENBOYA</div>
+
+    <div class="quick-info">
+      <span>MODE : <strong id="modeReadout">ARRÊT</strong></span>
+      <span>VITESSE : <strong id="speedReadoutSmall">50 %</strong></span>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-title">COMMANDES DE DÉPLACEMENT</div>
+  <div class="panel-content">
+
+    <div class="controls-layout">
+
+      <div class="pad">
+        <button class="direction" id="forward" data-command="F">▲</button>
+        <button class="direction" id="left" data-command="L">◀</button>
+        <button class="stop" id="stop">STOP</button>
+        <button class="direction" id="right" data-command="R">▶</button>
+        <button class="direction" id="backward" data-command="B">▼</button>
+      </div>
+
+      <div class="side-controls">
+
+        <div>
+          <div class="control-label">PUISSANCE MOTEUR</div>
+          <div class="segmented">
+            <button id="speed1" class="active" disabled>50 %</button>
+            <button id="speed2" disabled>100 %</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="control-label">ANTI-COLLISION</div>
+          <div class="anti-row">
+            <span class="anti-state" id="antiStatus">ACTIVÉ</span>
+            <label class="switch">
+              <input type="checkbox" id="antiToggle" checked disabled>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="camera-note">
+          PC : flèches directionnelles pour conduire.
+          Espace pour arrêter.
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-title">ÉTAT DU SYSTÈME</div>
+  <div class="panel-content">
+
+    <div class="quick-info">
+      <span>LIAISON</span>
+      <strong id="linkState">EN ATTENTE</strong>
+    </div>
+
+    <div class="quick-info">
+      <span>ANTI-COLLISION</span>
+      <strong id="antiStateDetail">ACTIVÉ</strong>
+    </div>
+
+    <div class="quick-info">
+      <span>COMMANDE</span>
+      <strong id="commandState">STOP</strong>
+    </div>
+
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  ENBOYA // INTERFACE DE CONTRÔLE // VERSION WEB
+</div>
+
+</main>
+
+<script>
+"use strict";
+
 /* BLUETOOTH HM-10 */
 
-const SERVICE_UUID = "0000ffe0-0000-1000-8000-00805f9b34fb";
-const CHARACTERISTIC_UUID = "0000ffe1-0000-1000-8000-00805f9b34fb";
+const SERVICE_UUID =
+"0000ffe0-0000-1000-8000-00805f9b34fb";
+
+const CHARACTERISTIC_UUID =
+"0000ffe1-0000-1000-8000-00805f9b34fb";
 
 let device = null;
 let characteristic = null;
 let writeQueue = Promise.resolve();
 
 const statusText = document.getElementById("status");
+const statusDot = document.getElementById("statusDot");
 const connectButton = document.getElementById("connect");
+
 const antiToggle = document.getElementById("antiToggle");
 const antiStatus = document.getElementById("antiStatus");
 
 const speed1 = document.getElementById("speed1");
 const speed2 = document.getElementById("speed2");
 
-let currentSpeed = 1;
+const directionButtons =
+document.querySelectorAll(".direction");
 
-function updateStatus(text, color) {
+const pressedPointers = new Map();
+const pressedKeys = new Set();
+
+const keyCommands = {
+  ArrowUp:"F",
+  ArrowDown:"B",
+  ArrowLeft:"L",
+  ArrowRight:"R"
+};
+
+function updateStatus(text,color) {
   statusText.textContent = text;
   statusText.style.color = color;
+  statusDot.style.background = color;
 }
 
 function updateAntiDisplay(enabled) {
   antiToggle.checked = enabled;
-  antiStatus.textContent = enabled ? "ACTIVÉ" : "DÉSACTIVÉ";
-  antiStatus.style.color = enabled ? "#35e69a" : "#ffbd55";
+
+  antiStatus.textContent =
+    enabled ? "ACTIVÉ" : "DÉSACTIVÉ";
+
+  antiStatus.style.color =
+    enabled ? "#35e69a" : "#ffbd55";
+
+  document.getElementById("antiStateDetail")
+    .textContent = enabled ? "ACTIVÉ" : "DÉSACTIVÉ";
 }
 
 function updateSpeedDisplay(speed) {
-  currentSpeed = speed;
-  speed1.classList.toggle("active", speed === 1);
-  speed2.classList.toggle("active", speed === 2);
-}
+  speed1.classList.toggle("active",speed === 1);
+  speed2.classList.toggle("active",speed === 2);
 
-/* ENVOI BLUETOOTH */
+  document.getElementById("speedReadoutSmall")
+    .textContent = speed === 1 ? "50 %" : "100 %";
+
+  document.getElementById("speedReadout")
+    .textContent = speed === 1 ? "50" : "100";
+}
 
 function sendCommand(command) {
   if (!characteristic) return Promise.resolve();
 
-  writeQueue = writeQueue
-    .catch(() => {})
-    .then(async () => {
-      if (!characteristic) return;
+  const activeCharacteristic = characteristic;
 
-      const data = new TextEncoder().encode(command);
+  writeQueue = writeQueue.catch(()=>{}).then(async()=>{
 
-      if (characteristic.writeValueWithoutResponse) {
-        await characteristic.writeValueWithoutResponse(data);
-      } else {
-        await characteristic.writeValue(data);
-      }
-    })
-    .catch(error => {
-      console.error("Erreur Bluetooth :", error);
-    });
+    if (!characteristic ||
+        characteristic !== activeCharacteristic) return;
+
+    const data = new TextEncoder().encode(command);
+
+    if (activeCharacteristic.writeValueWithoutResponse) {
+      await activeCharacteristic.writeValueWithoutResponse(data);
+    } else {
+      await activeCharacteristic.writeValue(data);
+    }
+
+  }).catch(error=>{
+    console.error("Erreur Bluetooth :",error);
+  });
 
   return writeQueue;
 }
 
-/* VITESSE */
+/* CONNEXION BLUETOOTH */
 
-async function selectSpeed(speed) {
-  if (!characteristic) return;
-
-  await sendCommand(speed === 1 ? "1" : "2");
-  updateSpeedDisplay(speed);
-}
-
-speed1.addEventListener("click", () => selectSpeed(1));
-speed2.addEventListener("click", () => selectSpeed(2));
-
-/* CONNEXION */
-
-connectButton.addEventListener("click", async () => {
+connectButton.addEventListener("click",async()=>{
 
   if (!navigator.bluetooth) {
-    updateStatus("Web Bluetooth indisponible", "#ff5555");
+    updateStatus(
+      "Web Bluetooth indisponible : utilise Chrome ou Edge",
+      "#ff5555"
+    );
     return;
   }
 
   try {
 
-    updateStatus("Recherche...", "#ffbd55");
+    updateStatus("Recherche du module...","#ffbd55");
     connectButton.disabled = true;
 
     device = await navigator.bluetooth.requestDevice({
-      filters: [{ services: [SERVICE_UUID] }]
+      filters:[{services:[SERVICE_UUID]}]
     });
 
-    device.addEventListener("gattserverdisconnected", () => {
-
-      characteristic = null;
-
-      stopAllControls();
-
-      antiToggle.disabled = true;
-      speed1.disabled = true;
-      speed2.disabled = true;
-
-      updateAntiDisplay(true);
-      updateSpeedDisplay(1);
-
-      updateStatus("Bluetooth déconnecté", "#ff5555");
-
-      connectButton.textContent = "CONNECTER";
-      connectButton.disabled = false;
-    });
+    device.addEventListener(
+      "gattserverdisconnected",
+      handleDisconnect
+    );
 
     const server = await device.gatt.connect();
 
-    const service = await server.getPrimaryService(SERVICE_UUID);
+    const service =
+      await server.getPrimaryService(SERVICE_UUID);
 
-    characteristic = await service.getCharacteristic(
-      CHARACTERISTIC_UUID
-    );
+    characteristic =
+      await service.getCharacteristic(CHARACTERISTIC_UUID);
 
-    updateStatus("Bluetooth connecté", "#35e69a");
+    updateStatus("Bluetooth connecté","#35e69a");
+
+    document.getElementById("linkState")
+      .textContent = "CONNECTÉ";
 
     connectButton.textContent = "CONNECTÉ";
     connectButton.disabled = false;
@@ -132,29 +712,67 @@ connectButton.addEventListener("click", async () => {
     await sendCommand("1");
     await sendCommand("A");
 
-  } catch (error) {
+  } catch(error) {
 
     console.error(error);
 
     characteristic = null;
+    connectButton.disabled = false;
+    connectButton.textContent = "CONNECTER";
 
     antiToggle.disabled = true;
     speed1.disabled = true;
     speed2.disabled = true;
 
-    updateAntiDisplay(true);
-    updateSpeedDisplay(1);
+    document.getElementById("linkState")
+      .textContent = "NON CONNECTÉ";
 
-    updateStatus("Connexion impossible", "#ff5555");
-
-    connectButton.textContent = "CONNECTER";
-    connectButton.disabled = false;
+    updateStatus(
+      "Connexion impossible",
+      "#ff5555"
+    );
   }
 });
 
+function handleDisconnect() {
+
+  characteristic = null;
+
+  stopAllControls();
+
+  antiToggle.disabled = true;
+  speed1.disabled = true;
+  speed2.disabled = true;
+
+  updateAntiDisplay(true);
+  updateSpeedDisplay(1);
+
+  updateStatus("Bluetooth déconnecté","#ff5555");
+
+  document.getElementById("linkState")
+    .textContent = "DÉCONNECTÉ";
+
+  connectButton.textContent = "CONNECTER";
+  connectButton.disabled = false;
+}
+
+/* VITESSE */
+
+async function selectSpeed(speed) {
+
+  if (!characteristic) return;
+
+  await sendCommand(speed === 1 ? "1" : "2");
+
+  updateSpeedDisplay(speed);
+}
+
+speed1.addEventListener("click",()=>selectSpeed(1));
+speed2.addEventListener("click",()=>selectSpeed(2));
+
 /* ANTI-COLLISION */
 
-antiToggle.addEventListener("change", async () => {
+antiToggle.addEventListener("change",async()=>{
 
   if (!characteristic) {
     updateAntiDisplay(true);
@@ -168,27 +786,11 @@ antiToggle.addEventListener("change", async () => {
   await sendCommand(enabled ? "A" : "a");
 });
 
-/* COMMANDES DE DÉPLACEMENT */
-
-const directionButtons = document.querySelectorAll(".direction");
-
-const pressedPointers = new Map();
-const pressedKeys = new Set();
-
-const keyCommands = {
-  ArrowUp: "F",
-  ArrowDown: "B",
-  ArrowLeft: "L",
-  ArrowRight: "R"
-};
+/* COMMANDES */
 
 function getCurrentCommand() {
 
-  const commands = [];
-
-  for (const command of pressedPointers.values()) {
-    commands.push(command);
-  }
+  const commands = [...pressedPointers.values()];
 
   for (const key of pressedKeys) {
     if (keyCommands[key]) {
@@ -196,22 +798,38 @@ function getCurrentCommand() {
     }
   }
 
-  return commands.length ? commands[commands.length - 1] : "S";
+  return commands.length
+    ? commands[commands.length-1]
+    : "S";
 }
 
 function refreshControls() {
 
-  sendCommand(getCurrentCommand());
+  const command = getCurrentCommand();
 
-  directionButtons.forEach(button => {
+  sendCommand(command);
 
-    const command = button.dataset.command;
+  document.getElementById("commandState")
+    .textContent = command === "S" ? "STOP" : command;
+
+  document.getElementById("modeReadout")
+    .textContent = ({
+      F:"AVANCE",
+      B:"RECUL",
+      L:"GAUCHE",
+      R:"DROITE",
+      S:"ARRÊT"
+    })[command];
+
+  directionButtons.forEach(button=>{
+
+    const cmd = button.dataset.command;
 
     const pointerActive =
-      [...pressedPointers.values()].includes(command);
+      [...pressedPointers.values()].includes(cmd);
 
     const keyActive =
-      [...pressedKeys].some(key => keyCommands[key] === command);
+      [...pressedKeys].some(key=>keyCommands[key]===cmd);
 
     button.classList.toggle(
       "active",
@@ -225,17 +843,22 @@ function stopAllControls() {
   pressedPointers.clear();
   pressedKeys.clear();
 
-  directionButtons.forEach(button => {
+  directionButtons.forEach(button=>{
     button.classList.remove("active");
   });
+
+  document.getElementById("commandState")
+    .textContent = "STOP";
+
+  document.getElementById("modeReadout")
+    .textContent = "ARRÊT";
 
   sendCommand("S");
 }
 
-/* MAINTIEN DES COMMANDES
-   Envoi toutes les 250 ms tant que le bouton est appuyé. */
+/* MAINTIEN DES COMMANDES : TOUTES LES 250 MS */
 
-setInterval(() => {
+setInterval(()=>{
 
   const command = getCurrentCommand();
 
@@ -243,17 +866,17 @@ setInterval(() => {
     sendCommand(command);
   }
 
-}, 250);
+},250);
 
 /* BOUTONS TACTILES */
 
-directionButtons.forEach(button => {
+directionButtons.forEach(button=>{
 
-  button.addEventListener("contextmenu", event => {
+  button.addEventListener("contextmenu",event=>{
     event.preventDefault();
   });
 
-  button.addEventListener("pointerdown", event => {
+  button.addEventListener("pointerdown",event=>{
 
     event.preventDefault();
 
@@ -266,7 +889,7 @@ directionButtons.forEach(button => {
 
     try {
       button.setPointerCapture(event.pointerId);
-    } catch (error) {}
+    } catch(error) {}
 
     refreshControls();
   });
@@ -280,37 +903,26 @@ directionButtons.forEach(button => {
     refreshControls();
   }
 
-  button.addEventListener("pointerup", releasePointer);
-  button.addEventListener("pointercancel", releasePointer);
-  button.addEventListener("lostpointercapture", releasePointer);
+  button.addEventListener("pointerup",releasePointer);
+  button.addEventListener("pointercancel",releasePointer);
+  button.addEventListener("lostpointercapture",releasePointer);
+
 });
 
-/* CLAVIER PC */
+/* BOUTON STOP */
 
-function getKeyboardKey(event) {
+document.getElementById("stop")
+  .addEventListener("click",stopAllControls);
 
-  if (event.code && event.code.startsWith("Arrow")) {
-    return event.code;
-  }
+/* CLAVIER */
 
-  return event.key;
-}
+window.addEventListener("keydown",event=>{
 
-window.addEventListener("keydown", event => {
+  const key = event.key;
 
-  const key = getKeyboardKey(event);
-
-  if (key === "Space" || key === " ") {
-
+  if (key === " ") {
     event.preventDefault();
-
-    if (event.repeat || !characteristic) return;
-
-    pressedKeys.clear();
-    pressedPointers.clear();
-
-    refreshControls();
-
+    stopAllControls();
     return;
   }
 
@@ -318,21 +930,20 @@ window.addEventListener("keydown", event => {
 
   event.preventDefault();
 
-  if (!characteristic) return;
-
-  if (event.repeat || pressedKeys.has(key)) return;
+  if (!characteristic ||
+      event.repeat ||
+      pressedKeys.has(key)) return;
 
   pressedKeys.add(key);
 
   refreshControls();
+});
 
-}, true);
+window.addEventListener("keyup",event=>{
 
-window.addEventListener("keyup", event => {
+  const key = event.key;
 
-  const key = getKeyboardKey(event);
-
-  if (key === "Space" || key === " ") {
+  if (key === " ") {
     event.preventDefault();
     return;
   }
@@ -344,73 +955,52 @@ window.addEventListener("keyup", event => {
   pressedKeys.delete(key);
 
   refreshControls();
+});
 
-}, true);
+window.addEventListener("blur",stopAllControls);
 
-/* ARRÊT SI LA PAGE PERD LE FOCUS */
-
-window.addEventListener("blur", stopAllControls);
-
-document.addEventListener("visibilitychange", () => {
-
-  if (document.hidden) {
-    stopAllControls();
-  }
+document.addEventListener("visibilitychange",()=>{
+  if (document.hidden) stopAllControls();
 });
 
 /* GRADUATIONS DU COMPTEUR */
 
 const ticks = document.getElementById("ticks");
 
-for (let i = 0; i <= 20; i++) {
+for (let i=0;i<=20;i++) {
 
-  const angle = (-180 + i * 9) * Math.PI / 180;
+  const angle = (-180+i*9)*Math.PI/180;
 
-  const x1 = 160 + Math.cos(angle) * 112;
-  const y1 = 155 + Math.sin(angle) * 112;
+  const x1 = 160+Math.cos(angle)*112;
+  const y1 = 155+Math.sin(angle)*112;
 
-  const x2 = 160 + Math.cos(angle) * 128;
-  const y2 = 155 + Math.sin(angle) * 128;
+  const x2 = 160+Math.cos(angle)*128;
+  const y2 = 155+Math.sin(angle)*128;
 
   const tick = document.createElementNS(
     "http://www.w3.org/2000/svg",
     "line"
   );
 
-  tick.setAttribute("x1", x1);
-  tick.setAttribute("y1", y1);
-  tick.setAttribute("x2", x2);
-  tick.setAttribute("y2", y2);
-  tick.setAttribute("class", "tick");
+  tick.setAttribute("x1",x1);
+  tick.setAttribute("y1",y1);
+  tick.setAttribute("x2",x2);
+  tick.setAttribute("y2",y2);
 
-  let color = "#35e69a";
+  tick.setAttribute(
+    "stroke",
+    i>=17 ? "#ff5555" :
+    i>=13 ? "#ffbd55" :
+    "#35e69a"
+  );
 
-  if (i >= 13) color = "#ffbd55";
-  if (i >= 17) color = "#ff4545";
-
-  tick.style.setProperty("--tick-color", color);
-  tick.style.animationDelay = (0.7 + i * 0.055) + "s";
+  tick.setAttribute("stroke-width","3");
+  tick.setAttribute("stroke-linecap","round");
 
   ticks.appendChild(tick);
 }
 
-setTimeout(() => {
-
-  document.querySelectorAll(".tick").forEach(tick => {
-    tick.classList.add("lit");
-  });
-
-}, 700);
-
-/* FIN DE L'INTRO */
-
-setTimeout(() => {
-
-  document.getElementById("intro").classList.add("finished");
-
-}, 3300);
-
-/* ÉTAT INITIAL */
+/* INITIALISATION */
 
 updateAntiDisplay(true);
 updateSpeedDisplay(1);
@@ -418,3 +1008,17 @@ updateSpeedDisplay(1);
 antiToggle.disabled = true;
 speed1.disabled = true;
 speed2.disabled = true;
+
+document.getElementById("camera").addEventListener("error",()=>{
+  document.getElementById("camera").style.display = "none";
+  document.getElementById("cameraError").style.display = "block";
+});
+
+setTimeout(()=>{
+  document.getElementById("intro").classList.add("finished");
+},2200);
+
+</script>
+
+</body>
+</html>
