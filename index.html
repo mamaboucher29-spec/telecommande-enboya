@@ -9,8 +9,8 @@
 <style>
 :root {
   --accent: #00b894;
-  --button-size: 85px;
-  --gap: 12px;
+  --button-size: 100px;
+  --gap: 14px;
 }
 
 * {
@@ -26,12 +26,15 @@ body {
   text-align: center;
 }
 
+/* EN-TÊTE */
+
 header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 900px;
+  max-width: 1100px;
   margin: auto;
+  gap: 10px;
 }
 
 h1 {
@@ -41,7 +44,7 @@ h1 {
 
 #status {
   color: #ffcc66;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #connect {
@@ -49,34 +52,49 @@ h1 {
   color: #101010;
   border: none;
   border-radius: 10px;
-  padding: 11px 15px;
+  padding: 12px 16px;
   font-weight: bold;
-  margin: 8px;
 }
+
+/* DISPOSITION PRINCIPALE */
 
 #mainLayout {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 18px;
-  max-width: 1000px;
-  margin: 20px auto;
+  gap: 35px;
+  max-width: 1200px;
+  margin: 25px auto;
 }
+
+/* COMMANDES */
 
 .controlColumn {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: var(--gap);
+  flex: 1;
 }
+
+/* Groupe gauche : tourner */
+
+.controlColumn:first-child {
+  flex-direction: row;
+}
+
+/* BOUTONS */
 
 .direction {
   width: var(--button-size);
   height: var(--button-size);
+  flex-shrink: 0;
   border: 2px solid #555;
-  border-radius: 16px;
+  border-radius: 20px;
   background: #303943;
   color: white;
-  font-size: 35px;
+  font-size: 46px;
   font-weight: bold;
   touch-action: none;
   user-select: none;
@@ -90,10 +108,13 @@ h1 {
   transform: scale(0.95);
 }
 
+/* CAMÉRA */
+
 #cameraContainer {
-  width: min(42vw, 420px);
+  width: min(40vw, 430px);
   aspect-ratio: 4 / 3;
-  background: #000;
+  flex-shrink: 0;
+  background: black;
   border: 2px solid #444;
   border-radius: 12px;
   overflow: hidden;
@@ -108,20 +129,22 @@ h1 {
 
 #cameraStatus {
   position: absolute;
-  bottom: 5px;
+  bottom: 0;
   left: 0;
   right: 0;
+  padding: 5px;
   color: white;
-  font-size: 11px;
+  font-size: 12px;
   background: #0009;
-  padding: 4px;
 }
+
+/* PERSONNALISATION */
 
 #settingsToggle {
   background: #303943;
   color: white;
   border: 1px solid #555;
-  padding: 10px 18px;
+  padding: 11px 18px;
   border-radius: 10px;
 }
 
@@ -147,10 +170,52 @@ h1 {
   display: none;
 }
 
+/* ÉCRAN PAYSAGE */
+
+@media (orientation: landscape) {
+  body {
+    padding: 6px 12px;
+  }
+
+  #mainLayout {
+    margin: 15px auto;
+  }
+}
+
+/* PETITS ÉCRANS EN PAYSAGE */
+
+@media (orientation: landscape) and (max-height: 500px) {
+  h1 {
+    font-size: 18px;
+    margin: 4px;
+  }
+
+  #connect {
+    padding: 8px 12px;
+  }
+
+  #mainLayout {
+    margin: 8px auto;
+    gap: 20px;
+  }
+
+  .direction {
+    width: min(var(--button-size), 19vh);
+    height: min(var(--button-size), 19vh);
+    font-size: 36px;
+  }
+
+  #cameraContainer {
+    width: min(38vw, 350px);
+  }
+}
+
+/* ÉCRAN PORTRAIT */
+
 @media (orientation: portrait) {
   #mainLayout {
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
   }
 
   #cameraContainer {
@@ -161,40 +226,14 @@ h1 {
   .controlColumn {
     flex-direction: row;
   }
-}
 
-@media (max-height: 450px) and (orientation: landscape) {
-  body {
-    padding: 4px;
-  }
-
-  h1 {
-    font-size: 17px;
-    margin: 3px;
-  }
-
-  #connect {
-    padding: 7px 10px;
-    margin: 3px;
-  }
-
-  #mainLayout {
-    margin: 5px auto;
-    gap: 12px;
-  }
-
-  #cameraContainer {
-    width: min(38vw, 330px);
+  .controlColumn:first-child {
+    flex-direction: row;
   }
 
   .direction {
-    width: min(var(--button-size), 17vh);
-    height: min(var(--button-size), 17vh);
-    font-size: 30px;
-  }
-
-  .controlColumn {
-    gap: 8px;
+    width: min(var(--button-size), 20vw);
+    height: min(var(--button-size), 20vw);
   }
 }
 </style>
@@ -208,29 +247,38 @@ h1 {
   <button id="connect">CONNECTER</button>
 </header>
 
-<div id="mainLayout">
+<main id="mainLayout">
 
-  <!-- Commandes de direction -->
+  <!-- COMMANDES GAUCHE / DROITE -->
   <div class="controlColumn">
+
     <button class="direction" data-command="L">◀</button>
     <button class="direction" data-command="R">▶</button>
+
   </div>
 
-  <!-- Caméra Motorola -->
+  <!-- CAMÉRA MOTOROLA -->
   <div id="cameraContainer">
-    <img id="camera"
-         src="http://192.168.1.200:8080/video"
-         alt="Caméra ENBOYA">
+
+    <img
+      id="camera"
+      src="http://192.168.1.200:8080/video"
+      alt="Caméra ENBOYA"
+    >
+
     <div id="cameraStatus">Connexion caméra...</div>
+
   </div>
 
-  <!-- Commandes avancer / reculer -->
+  <!-- COMMANDES AVANCER / RECULER -->
   <div class="controlColumn">
+
     <button class="direction" data-command="F">▲</button>
     <button class="direction" data-command="B">▼</button>
+
   </div>
 
-</div>
+</main>
 
 <button id="settingsToggle">PERSONNALISER ⚙</button>
 
@@ -240,34 +288,29 @@ h1 {
   <input type="color" id="color" value="#00b894">
 
   <label>Taille des boutons</label>
-  <input type="range" id="size" min="55" max="120" value="85">
+  <input type="range" id="size" min="65" max="145" value="100">
 
-  <label>Espacement</label>
-  <input type="range" id="spacing" min="4" max="25" value="12">
+  <label>Espacement des boutons</label>
+  <input type="range" id="spacing" min="4" max="30" value="14">
 
 </div>
 
 <script>
+
+/* BLUETOOTH */
+
 let device = null;
 let characteristic = null;
 let activeButton = null;
 
 const statusText = document.getElementById("status");
-const camera = document.getElementById("camera");
-const cameraStatus = document.getElementById("cameraStatus");
-
-camera.onload = () => {
-  cameraStatus.textContent = "CAMÉRA CONNECTÉE";
-};
-
-camera.onerror = () => {
-  cameraStatus.textContent = "CAMÉRA INDISPONIBLE";
-};
 
 async function connectRobot() {
+
   try {
+
     if (!navigator.bluetooth) {
-      statusText.textContent = "Bluetooth Web non disponible";
+      statusText.textContent = "Bluetooth non disponible";
       return;
     }
 
@@ -275,16 +318,21 @@ async function connectRobot() {
 
     device = await navigator.bluetooth.requestDevice({
       filters: [{
-        services: ["0000ffe0-0000-1000-8000-00805f9b34fb"]
+        services: [
+          "0000ffe0-0000-1000-8000-00805f9b34fb"
+        ]
       }]
     });
 
-    device.addEventListener("gattserverdisconnected", () => {
-      characteristic = null;
-      statusText.textContent = "Bluetooth déconnecté";
-      releaseButton();
-      document.getElementById("connect").textContent = "CONNECTER";
-    });
+    device.addEventListener(
+      "gattserverdisconnected",
+      () => {
+        releaseButton();
+        characteristic = null;
+        statusText.textContent = "Bluetooth déconnecté";
+        document.getElementById("connect").textContent = "CONNECTER";
+      }
+    );
 
     const server = await device.gatt.connect();
 
@@ -300,14 +348,21 @@ async function connectRobot() {
     document.getElementById("connect").textContent = "CONNECTÉ";
 
   } catch (error) {
+
     statusText.textContent = "Erreur : " + error.message;
+
   }
+
 }
 
+/* ENVOI DES COMMANDES */
+
 async function sendCommand(command) {
+
   if (!characteristic) return;
 
   try {
+
     const data = new TextEncoder().encode(command);
 
     if (characteristic.properties.writeWithoutResponse) {
@@ -315,72 +370,113 @@ async function sendCommand(command) {
     } else {
       await characteristic.writeValue(data);
     }
+
   } catch (error) {
+
     statusText.textContent = "Erreur Bluetooth";
+
   }
+
 }
 
+/* ARRÊT AU RELÂCHEMENT */
+
 function releaseButton() {
+
   if (activeButton) {
+
     activeButton.classList.remove("active");
     activeButton = null;
+
     sendCommand("S");
+
   }
+
 }
+
+/* GESTION DES QUATRE BOUTONS */
 
 document.querySelectorAll(".direction").forEach(button => {
 
   button.addEventListener("pointerdown", event => {
+
     event.preventDefault();
 
     if (!characteristic || activeButton) return;
 
     activeButton = button;
+
     button.classList.add("active");
+
     button.setPointerCapture(event.pointerId);
 
     sendCommand(button.dataset.command);
+
   });
 
   button.addEventListener("pointerup", event => {
+
     event.preventDefault();
     releaseButton();
+
   });
 
   button.addEventListener("pointercancel", releaseButton);
   button.addEventListener("lostpointercapture", releaseButton);
+
 });
 
+/* BOUTON BLUETOOTH */
+
 document.getElementById("connect").addEventListener(
-  "click", connectRobot
+  "click",
+  connectRobot
 );
 
+/* PERSONNALISATION */
+
 document.getElementById("settingsToggle").addEventListener(
-  "click", () => {
+  "click",
+  () => {
     document.getElementById("settings").classList.toggle("hidden");
   }
 );
 
-document.getElementById("color").addEventListener("input", event => {
-  document.documentElement.style.setProperty(
-    "--accent", event.target.value
-  );
-});
+document.getElementById("color").addEventListener(
+  "input",
+  event => {
+    document.documentElement.style.setProperty(
+      "--accent",
+      event.target.value
+    );
+  }
+);
 
-document.getElementById("size").addEventListener("input", event => {
-  document.documentElement.style.setProperty(
-    "--button-size", event.target.value + "px"
-  );
-});
+document.getElementById("size").addEventListener(
+  "input",
+  event => {
+    document.documentElement.style.setProperty(
+      "--button-size",
+      event.target.value + "px"
+    );
+  }
+);
 
-document.getElementById("spacing").addEventListener("input", event => {
-  document.documentElement.style.setProperty(
-    "--gap", event.target.value + "px"
-  );
-});
+document.getElementById("spacing").addEventListener(
+  "input",
+  event => {
+    document.documentElement.style.setProperty(
+      "--gap",
+      event.target.value + "px"
+    );
+  }
+);
+
+/* SÉCURITÉ : ARRÊT LORSQUE LA PAGE PERD LE FOCUS */
 
 window.addEventListener("pagehide", releaseButton);
 window.addEventListener("blur", releaseButton);
+
 </script>
 
 </body>
