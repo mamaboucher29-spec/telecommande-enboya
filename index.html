@@ -1,760 +1,4 @@
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080d13">
-<title>ENBOYA | Control System</title>
-
-<style>
-:root {
-  --blue: #16a9ff;
-  --cyan: #37d9ff;
-  --green: #35e69a;
-  --red: #ff4545;
-  --text: #eaf3fc;
-}
-
-* {
-  box-sizing: border-box;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  overflow: hidden;
-  font-family: Arial, sans-serif;
-  color: var(--text);
-  background:
-    radial-gradient(ellipse at 50% 45%, #173b52 0%, transparent 65%),
-    radial-gradient(ellipse at 10% 90%, #06304b 0%, transparent 45%),
-    radial-gradient(ellipse at 90% 10%, #102b40 0%, transparent 45%),
-    repeating-linear-gradient(45deg, #ffffff09 0 2px, transparent 2px 6px),
-    repeating-linear-gradient(-45deg, #00000035 0 2px, transparent 2px 6px),
-    linear-gradient(135deg, #030609, #101b27 50%, #030609);
-}
-
-/* FOND COCKPIT */
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: .55;
-  background:
-    linear-gradient(90deg, transparent 49.8%, #16a9ff35 50%, transparent 50.2%),
-    linear-gradient(0deg, transparent 49.8%, #16a9ff20 50%, transparent 50.2%),
-    radial-gradient(ellipse at center, transparent 20%, #00000099 100%);
-  background-size: 90px 90px, 90px 90px, 100% 100%;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: 10px;
-  border: 1px solid #2b526b88;
-  border-radius: 12px;
-  pointer-events: none;
-  box-shadow: inset 0 0 25px #16a9ff0b, 0 0 20px #0008;
-}
-
-/* HEADER */
-
-header {
-  min-height: 72px;
-  padding: 8px 25px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  background: linear-gradient(90deg, #05090e, #142b3c, #05090e);
-  border-bottom: 1px solid #1b526f;
-  box-shadow: 0 4px 25px #0008, 0 1px 12px #16a9ff22;
-  position: relative;
-  z-index: 2;
-}
-
-.brand {
-  font-size: 23px;
-  font-weight: 900;
-  letter-spacing: 5px;
-  text-shadow: 0 0 15px #16a9ff55;
-}
-
-.brand span,
-.intro-logo span {
-  color: var(--blue);
-}
-
-.header-subtitle {
-  font-size: 9px;
-  color: #6e91a9;
-  letter-spacing: 3px;
-  margin-top: 3px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-/* PANNEAU VITESSE */
-
-.speed-panel {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 7px;
-  border: 1px solid #28617f;
-  border-radius: 8px;
-  background: linear-gradient(145deg, #142b3c, #09131d);
-  box-shadow: inset 0 1px 1px #ffffff12, 0 0 14px #16a9ff18;
-}
-
-.speed-title {
-  font-size: 9px;
-  font-weight: bold;
-  color: #dff5ff;
-  letter-spacing: 1px;
-  margin-right: 4px;
-}
-
-.speed-button {
-  padding: 8px 10px;
-  border: 1px solid #426174;
-  border-radius: 5px;
-  color: #9bb4c5;
-  background: #101c29;
-  font-size: 10px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.speed-button.active {
-  color: white;
-  border-color: var(--cyan);
-  background: linear-gradient(135deg, #087fbd, #075078);
-  box-shadow: 0 0 12px #16a9ff55;
-}
-
-.speed-button:disabled {
-  opacity: .4;
-  cursor: not-allowed;
-}
-
-/* PANNEAU ANTI-COLLISION */
-
-.anti-panel {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border: 1px solid #28617f;
-  border-radius: 8px;
-  background: linear-gradient(145deg, #142b3c, #09131d);
-  box-shadow: inset 0 1px 1px #ffffff12, 0 0 14px #16a9ff18;
-}
-
-.anti-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.anti-title {
-  font-size: 10px;
-  font-weight: bold;
-  letter-spacing: 1.5px;
-  color: #dff5ff;
-}
-
-.anti-caption {
-  font-size: 9px;
-  color: #7596ac;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 42px;
-  height: 23px;
-  flex-shrink: 0;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-  position: absolute;
-}
-
-.switch-track {
-  position: absolute;
-  inset: 0;
-  cursor: pointer;
-  border-radius: 20px;
-  background: #394957;
-  border: 1px solid #668093;
-  transition: .2s;
-}
-
-.switch-track::before {
-  content: "";
-  position: absolute;
-  width: 15px;
-  height: 15px;
-  left: 3px;
-  top: 3px;
-  border-radius: 50%;
-  background: #eaf3fc;
-  box-shadow: 0 1px 5px #0009;
-  transition: .2s;
-}
-
-.switch input:checked + .switch-track {
-  background: #087fbd;
-  border-color: var(--cyan);
-  box-shadow: 0 0 12px #16a9ff66;
-}
-
-.switch input:checked + .switch-track::before {
-  transform: translateX(19px);
-  background: white;
-}
-
-.switch input:disabled + .switch-track {
-  opacity: .45;
-  cursor: not-allowed;
-}
-
-#antiStatus {
-  min-width: 48px;
-  font-size: 9px;
-  font-weight: bold;
-  letter-spacing: .7px;
-  color: var(--green);
-}
-
-/* BLUETOOTH */
-
-.connection {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-#status {
-  font-size: 11px;
-  color: #ffbd55;
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-
-#connect {
-  border: 1px solid var(--blue);
-  border-radius: 6px;
-  padding: 10px 15px;
-  color: white;
-  background: linear-gradient(135deg, #123e5a, #0b1c2b);
-  box-shadow: 0 0 15px #16a9ff22;
-  font-weight: bold;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-/* INTERFACE PRINCIPALE */
-
-main {
-  height: calc(100vh - 72px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(12px, 3vw, 42px);
-  padding: 20px;
-  position: relative;
-  z-index: 1;
-}
-
-.control-group {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 13px;
-  flex-shrink: 0;
-}
-
-.left-controls {
-  flex-direction: row;
-}
-
-.right-controls {
-  flex-direction: column;
-}
-
-/* BOUTONS */
-
-.direction {
-  width: clamp(65px, 10vw, 105px);
-  height: clamp(65px, 10vw, 105px);
-  border-radius: 17px;
-  border: 1px solid #28617f;
-  color: #eaf8ff;
-  font-size: clamp(28px, 5vw, 43px);
-  font-weight: bold;
-  cursor: pointer;
-  background: linear-gradient(145deg, #203d51, #101c29 70%);
-  box-shadow:
-    inset 0 1px 1px #ffffff22,
-    0 6px 0 #050a10,
-    0 10px 22px #0009,
-    0 0 15px #16a9ff12;
-  transition: transform .08s, background .08s, box-shadow .08s;
-}
-
-.direction.active {
-  transform: translateY(5px);
-  color: white;
-  border-color: var(--cyan);
-  background: linear-gradient(145deg, #087fbd, #075078);
-  box-shadow:
-    inset 0 0 15px #ffffff22,
-    0 1px 0 #050a10,
-    0 0 25px #16a9ff88;
-}
-
-/* CAMERA */
-
-.camera-panel {
-  flex: 1;
-  max-width: 690px;
-  min-width: 120px;
-  padding: 8px;
-  border-radius: 13px;
-  border: 1px solid #28617f;
-  background: linear-gradient(145deg, #172a38, #05090e);
-  box-shadow:
-    0 0 0 3px #0a1119,
-    0 0 25px #16a9ff33,
-    0 15px 40px #0009;
-}
-
-.camera-top {
-  height: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 5px 6px;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: #7da5bd;
-}
-
-.camera-indicator {
-  color: var(--green);
-  text-shadow: 0 0 8px #35e69a88;
-}
-
-#camera {
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: contain;
-  background: #020507;
-  border-radius: 6px;
-}
-
-.camera-label {
-  text-align: center;
-  color: #7194aa;
-  font-size: 9px;
-  letter-spacing: 3px;
-  padding: 8px 0 2px;
-}
-
-/* INTRO */
-
-#intro {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: radial-gradient(ellipse at center, #172d40, #060a10 75%);
-  transition: opacity .7s ease, visibility .7s;
-}
-
-#intro.finished {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.intro-logo {
-  font-size: clamp(35px, 8vw, 65px);
-  font-weight: 900;
-  letter-spacing: 9px;
-  opacity: 0;
-  transform: scale(.75);
-  animation: logoIn .8s forwards;
-}
-
-.intro-subtitle {
-  color: #7e9bb2;
-  font-size: 11px;
-  letter-spacing: 5px;
-  margin-top: 8px;
-  opacity: 0;
-  animation: fadeIn .6s .5s forwards;
-}
-
-.gauge {
-  width: min(330px, 75vw);
-  margin-top: 18px;
-}
-
-.gauge svg {
-  width: 100%;
-  overflow: visible;
-}
-
-.tick {
-  stroke: #263d50;
-  stroke-width: 4;
-  stroke-linecap: round;
-  opacity: .2;
-}
-
-.tick.lit {
-  animation: tickOn .12s forwards;
-}
-
-.needle {
-  transform-origin: 160px 155px;
-  transform: rotate(-90deg);
-  animation: needleMove 1.8s 1.1s cubic-bezier(.35,.05,.2,1) forwards;
-}
-
-.gauge-number {
-  fill: white;
-  font-size: 25px;
-  font-weight: bold;
-}
-
-.gauge-unit {
-  fill: #7592aa;
-  font-size: 10px;
-  letter-spacing: 2px;
-}
-
-.loading-text {
-  color: #7592aa;
-  font-size: 10px;
-  letter-spacing: 3px;
-  margin-top: 12px;
-  animation: pulse 1s infinite alternate;
-}
-
-@keyframes logoIn {
-  to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-
-@keyframes tickOn {
-  to { opacity: 1; stroke: var(--tick-color); }
-}
-
-@keyframes needleMove {
-  0% { transform: rotate(-90deg); }
-  35% { transform: rotate(90deg); }
-  55% { transform: rotate(45deg); }
-  78% { transform: rotate(-15deg); }
-  100% { transform: rotate(-90deg); }
-}
-
-@keyframes pulse {
-  to { opacity: .35; }
-}
-
-/* APPARITION */
-
-header, main {
-  opacity: 0;
-  transform: translateY(12px);
-  animation: interfaceIn .7s 2.9s forwards;
-}
-
-@keyframes interfaceIn {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* MOBILE */
-
-@media (max-width: 800px) {
-  header {
-    min-height: 64px;
-    padding: 7px 12px;
-    gap: 8px;
-  }
-
-  .brand {
-    font-size: 17px;
-    letter-spacing: 2px;
-  }
-
-  .header-subtitle {
-    display: none;
-  }
-
-  .header-right {
-    gap: 7px;
-  }
-
-  .speed-panel {
-    gap: 3px;
-    padding: 5px;
-  }
-
-  .speed-title {
-    font-size: 8px;
-    margin-right: 1px;
-  }
-
-  .speed-button {
-    padding: 7px 6px;
-    font-size: 8px;
-  }
-
-  .anti-panel {
-    gap: 6px;
-    padding: 6px 7px;
-  }
-
-  .anti-title {
-    font-size: 8px;
-  }
-
-  .anti-caption {
-    display: none;
-  }
-
-  #antiStatus {
-    min-width: 0;
-    font-size: 8px;
-  }
-
-  .switch {
-    width: 36px;
-    height: 21px;
-  }
-
-  .switch-track::before {
-    width: 13px;
-    height: 13px;
-  }
-
-  .switch input:checked + .switch-track::before {
-    transform: translateX(15px);
-  }
-
-  #status {
-    font-size: 8px;
-  }
-
-  #connect {
-    padding: 7px 8px;
-    font-size: 9px;
-  }
-
-  main {
-    height: calc(100vh - 64px);
-    gap: 7px;
-    padding: 7px;
-  }
-
-  .control-group {
-    gap: 6px;
-  }
-
-  .direction {
-    width: clamp(47px, 13vw, 75px);
-    height: clamp(55px, 16vw, 75px);
-    border-radius: 12px;
-    font-size: 27px;
-  }
-
-  .camera-panel {
-    padding: 4px;
-  }
-
-  .camera-top {
-    font-size: 7px;
-    height: 16px;
-  }
-
-  .camera-label {
-    font-size: 7px;
-  }
-}
-
-@media (max-width: 520px) {
-  header {
-    flex-wrap: wrap;
-  }
-
-  .header-right {
-    flex: 1;
-    justify-content: flex-end;
-  }
-
-  .connection {
-    gap: 6px;
-  }
-
-  #status {
-    max-width: 75px;
-    white-space: normal;
-    text-align: right;
-  }
-
-  main {
-    height: calc(100vh - 64px);
-  }
-}
-</style>
-</head>
-
-<body>
-
-<!-- ANIMATION DE DEMARRAGE -->
-
-<div id="intro">
-  <div class="intro-logo">EN<span>BOYA</span></div>
-  <div class="intro-subtitle">ROBOT CONTROL SYSTEM</div>
-
-  <div class="gauge">
-    <svg viewBox="0 0 320 180">
-      <defs>
-        <linearGradient id="needleColor">
-          <stop offset="0%" stop-color="#19a7ff"/>
-          <stop offset="100%" stop-color="#ffffff"/>
-        </linearGradient>
-      </defs>
-
-      <path d="M 45 155 A 115 115 0 0 1 275 155"
-            fill="none" stroke="#20394d" stroke-width="8"
-            stroke-linecap="round"/>
-
-      <g id="ticks"></g>
-
-      <text x="160" y="125" text-anchor="middle"
-            class="gauge-number">ENBOYA</text>
-
-      <text x="160" y="143" text-anchor="middle"
-            class="gauge-unit">SYSTEM START</text>
-
-      <g class="needle">
-        <line x1="160" y1="155" x2="160" y2="48"
-              stroke="url(#needleColor)" stroke-width="4"
-              stroke-linecap="round"/>
-        <circle cx="160" cy="155" r="8" fill="#19a7ff"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="loading-text">INITIALISATION...</div>
-</div>
-
-<!-- HEADER -->
-
-<header>
-  <div>
-    <div class="brand">EN<span>BOYA</span></div>
-    <div class="header-subtitle">ROBOT CONTROL SYSTEM</div>
-  </div>
-
-  <div class="header-right">
-
-    <!-- SELECTEUR DE VITESSE -->
-
-    <div class="speed-panel">
-      <span class="speed-title">VITESSE</span>
-
-      <button class="speed-button active" id="speed1" disabled>
-        1 · 50%
-      </button>
-
-      <button class="speed-button" id="speed2" disabled>
-        2 · 100%
-      </button>
-    </div>
-
-    <!-- ANTI-COLLISION -->
-
-    <div class="anti-panel">
-      <div class="anti-info">
-        <span class="anti-title">ANTI-COLLISION</span>
-        <span class="anti-caption">Protection ultrason</span>
-      </div>
-
-      <label class="switch" title="Activer ou désactiver l'anti-collision">
-        <input type="checkbox" id="antiToggle" checked disabled>
-        <span class="switch-track"></span>
-      </label>
-
-      <span id="antiStatus">ACTIVÉ</span>
-    </div>
-
-    <!-- CONNEXION -->
-
-    <div class="connection">
-      <span id="status">Bluetooth déconnecté</span>
-      <button id="connect">CONNECTER</button>
-    </div>
-
-  </div>
-</header>
-
-<!-- COMMANDES -->
-
-<main>
-  <div class="control-group left-controls">
-    <button class="direction" data-command="L" aria-label="Gauche">◀</button>
-    <button class="direction" data-command="R" aria-label="Droite">▶</button>
-  </div>
-
-  <div class="camera-panel">
-    <div class="camera-top">
-      <span>ENBOYA / LIVE FEED</span>
-      <span class="camera-indicator">● LIVE</span>
-    </div>
-
-    <img id="camera"
-         src="http://192.168.1.200:8080/video"
-         alt="Caméra ENBOYA">
-
-    <div class="camera-label">CAMÉRA EMBARQUÉE</div>
-  </div>
-
-  <div class="control-group right-controls">
-    <button class="direction" data-command="F" aria-label="Avancer">▲</button>
-    <button class="direction" data-command="B" aria-label="Reculer">▼</button>
-  </div>
-</main>
-
-<script>
 /* BLUETOOTH HM-10 */
 
 const SERVICE_UUID = "0000ffe0-0000-1000-8000-00805f9b34fb";
@@ -785,11 +29,8 @@ function updateAntiDisplay(enabled) {
   antiStatus.style.color = enabled ? "#35e69a" : "#ffbd55";
 }
 
-/* AFFICHAGE VITESSE */
-
 function updateSpeedDisplay(speed) {
   currentSpeed = speed;
-
   speed1.classList.toggle("active", speed === 1);
   speed2.classList.toggle("active", speed === 2);
 }
@@ -819,14 +60,12 @@ function sendCommand(command) {
   return writeQueue;
 }
 
-/* CHANGEMENT DE VITESSE */
+/* VITESSE */
 
 async function selectSpeed(speed) {
   if (!characteristic) return;
 
-  const command = speed === 1 ? "1" : "2";
-
-  await sendCommand(command);
+  await sendCommand(speed === 1 ? "1" : "2");
   updateSpeedDisplay(speed);
 }
 
@@ -836,12 +75,14 @@ speed2.addEventListener("click", () => selectSpeed(2));
 /* CONNEXION */
 
 connectButton.addEventListener("click", async () => {
+
   if (!navigator.bluetooth) {
     updateStatus("Web Bluetooth indisponible", "#ff5555");
     return;
   }
 
   try {
+
     updateStatus("Recherche...", "#ffbd55");
     connectButton.disabled = true;
 
@@ -850,7 +91,9 @@ connectButton.addEventListener("click", async () => {
     });
 
     device.addEventListener("gattserverdisconnected", () => {
+
       characteristic = null;
+
       stopAllControls();
 
       antiToggle.disabled = true;
@@ -861,11 +104,13 @@ connectButton.addEventListener("click", async () => {
       updateSpeedDisplay(1);
 
       updateStatus("Bluetooth déconnecté", "#ff5555");
+
       connectButton.textContent = "CONNECTER";
       connectButton.disabled = false;
     });
 
     const server = await device.gatt.connect();
+
     const service = await server.getPrimaryService(SERVICE_UUID);
 
     characteristic = await service.getCharacteristic(
@@ -873,10 +118,9 @@ connectButton.addEventListener("click", async () => {
     );
 
     updateStatus("Bluetooth connecté", "#35e69a");
+
     connectButton.textContent = "CONNECTÉ";
     connectButton.disabled = false;
-
-    /* REGLAGES PAR DEFAUT */
 
     antiToggle.disabled = false;
     speed1.disabled = false;
@@ -889,6 +133,7 @@ connectButton.addEventListener("click", async () => {
     await sendCommand("A");
 
   } catch (error) {
+
     console.error(error);
 
     characteristic = null;
@@ -901,29 +146,32 @@ connectButton.addEventListener("click", async () => {
     updateSpeedDisplay(1);
 
     updateStatus("Connexion impossible", "#ff5555");
+
     connectButton.textContent = "CONNECTER";
     connectButton.disabled = false;
   }
 });
 
-/* OPTION ANTI-COLLISION */
+/* ANTI-COLLISION */
 
 antiToggle.addEventListener("change", async () => {
+
   if (!characteristic) {
     updateAntiDisplay(true);
     return;
   }
 
   const enabled = antiToggle.checked;
+
   updateAntiDisplay(enabled);
 
-  // A = activer ; a = désactiver
   await sendCommand(enabled ? "A" : "a");
 });
 
-/* GESTION DES COMMANDES */
+/* COMMANDES DE DÉPLACEMENT */
 
 const directionButtons = document.querySelectorAll(".direction");
+
 const pressedPointers = new Map();
 const pressedKeys = new Set();
 
@@ -935,6 +183,7 @@ const keyCommands = {
 };
 
 function getCurrentCommand() {
+
   const commands = [];
 
   for (const command of pressedPointers.values()) {
@@ -942,16 +191,20 @@ function getCurrentCommand() {
   }
 
   for (const key of pressedKeys) {
-    if (keyCommands[key]) commands.push(keyCommands[key]);
+    if (keyCommands[key]) {
+      commands.push(keyCommands[key]);
+    }
   }
 
   return commands.length ? commands[commands.length - 1] : "S";
 }
 
 function refreshControls() {
+
   sendCommand(getCurrentCommand());
 
   directionButtons.forEach(button => {
+
     const command = button.dataset.command;
 
     const pointerActive =
@@ -960,11 +213,15 @@ function refreshControls() {
     const keyActive =
       [...pressedKeys].some(key => keyCommands[key] === command);
 
-    button.classList.toggle("active", pointerActive || keyActive);
+    button.classList.toggle(
+      "active",
+      pointerActive || keyActive
+    );
   });
 }
 
 function stopAllControls() {
+
   pressedPointers.clear();
   pressedKeys.clear();
 
@@ -975,18 +232,37 @@ function stopAllControls() {
   sendCommand("S");
 }
 
+/* MAINTIEN DES COMMANDES
+   Envoi toutes les 250 ms tant que le bouton est appuyé. */
+
+setInterval(() => {
+
+  const command = getCurrentCommand();
+
+  if (command !== "S" && characteristic) {
+    sendCommand(command);
+  }
+
+}, 250);
+
 /* BOUTONS TACTILES */
 
 directionButtons.forEach(button => {
+
   button.addEventListener("contextmenu", event => {
     event.preventDefault();
   });
 
   button.addEventListener("pointerdown", event => {
+
     event.preventDefault();
+
     if (!characteristic) return;
 
-    pressedPointers.set(event.pointerId, button.dataset.command);
+    pressedPointers.set(
+      event.pointerId,
+      button.dataset.command
+    );
 
     try {
       button.setPointerCapture(event.pointerId);
@@ -996,9 +272,11 @@ directionButtons.forEach(button => {
   });
 
   function releasePointer(event) {
+
     if (!pressedPointers.has(event.pointerId)) return;
 
     pressedPointers.delete(event.pointerId);
+
     refreshControls();
   }
 
@@ -1007,26 +285,32 @@ directionButtons.forEach(button => {
   button.addEventListener("lostpointercapture", releasePointer);
 });
 
-/* CLAVIER PC : FLECHES + ESPACE */
+/* CLAVIER PC */
 
 function getKeyboardKey(event) {
+
   if (event.code && event.code.startsWith("Arrow")) {
     return event.code;
   }
+
   return event.key;
 }
 
 window.addEventListener("keydown", event => {
+
   const key = getKeyboardKey(event);
 
   if (key === "Space" || key === " ") {
+
     event.preventDefault();
 
     if (event.repeat || !characteristic) return;
 
     pressedKeys.clear();
     pressedPointers.clear();
+
     refreshControls();
+
     return;
   }
 
@@ -1035,13 +319,17 @@ window.addEventListener("keydown", event => {
   event.preventDefault();
 
   if (!characteristic) return;
+
   if (event.repeat || pressedKeys.has(key)) return;
 
   pressedKeys.add(key);
+
   refreshControls();
+
 }, true);
 
 window.addEventListener("keyup", event => {
+
   const key = getKeyboardKey(event);
 
   if (key === "Space" || key === " ") {
@@ -1052,16 +340,22 @@ window.addEventListener("keyup", event => {
   if (!pressedKeys.has(key)) return;
 
   event.preventDefault();
+
   pressedKeys.delete(key);
+
   refreshControls();
+
 }, true);
 
-/* ARRET SI LA PAGE PERD LE FOCUS */
+/* ARRÊT SI LA PAGE PERD LE FOCUS */
 
 window.addEventListener("blur", stopAllControls);
 
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) stopAllControls();
+
+  if (document.hidden) {
+    stopAllControls();
+  }
 });
 
 /* GRADUATIONS DU COMPTEUR */
@@ -1069,15 +363,18 @@ document.addEventListener("visibilitychange", () => {
 const ticks = document.getElementById("ticks");
 
 for (let i = 0; i <= 20; i++) {
+
   const angle = (-180 + i * 9) * Math.PI / 180;
 
   const x1 = 160 + Math.cos(angle) * 112;
   const y1 = 155 + Math.sin(angle) * 112;
+
   const x2 = 160 + Math.cos(angle) * 128;
   const y2 = 155 + Math.sin(angle) * 128;
 
   const tick = document.createElementNS(
-    "http://www.w3.org/2000/svg", "line"
+    "http://www.w3.org/2000/svg",
+    "line"
   );
 
   tick.setAttribute("x1", x1);
@@ -1087,6 +384,7 @@ for (let i = 0; i <= 20; i++) {
   tick.setAttribute("class", "tick");
 
   let color = "#35e69a";
+
   if (i >= 13) color = "#ffbd55";
   if (i >= 17) color = "#ff4545";
 
@@ -1097,18 +395,22 @@ for (let i = 0; i <= 20; i++) {
 }
 
 setTimeout(() => {
+
   document.querySelectorAll(".tick").forEach(tick => {
     tick.classList.add("lit");
   });
+
 }, 700);
 
 /* FIN DE L'INTRO */
 
 setTimeout(() => {
+
   document.getElementById("intro").classList.add("finished");
+
 }, 3300);
 
-/* ETAT INITIAL */
+/* ÉTAT INITIAL */
 
 updateAntiDisplay(true);
 updateSpeedDisplay(1);
@@ -1116,7 +418,3 @@ updateSpeedDisplay(1);
 antiToggle.disabled = true;
 speed1.disabled = true;
 speed2.disabled = true;
-</script>
-
-</body>
-</html>
