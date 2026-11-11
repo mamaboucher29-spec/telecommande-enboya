@@ -33,11 +33,9 @@ body {
 button {font:inherit;color:inherit}
 
 .page {
-  width:100%;
-  max-width:1900px;
-  min-height:100vh;
+  width:min(1100px,100%);
   margin:auto;
-  padding:clamp(14px,2vw,30px);
+  padding:14px;
 }
 
 header {
@@ -46,12 +44,12 @@ header {
   align-items:center;
   gap:12px;
   border-bottom:1px solid var(--line);
-  padding:8px 2px 20px;
+  padding:8px 2px 16px;
 }
 
 .brand {
   font-weight:900;
-  font-size:clamp(28px,3vw,44px);
+  font-size:clamp(22px,5vw,34px);
   letter-spacing:.16em;
 }
 
@@ -59,22 +57,22 @@ header {
 
 .subtitle {
   color:var(--muted);
-  font-size:11px;
-  margin-top:5px;
+  font-size:10px;
+  margin-top:4px;
   letter-spacing:.2em;
 }
 
 .tag {
   border:1px solid var(--line);
   color:var(--cyan);
-  padding:9px 13px;
+  padding:7px 10px;
   border-radius:4px;
-  font-size:11px;
+  font-size:10px;
 }
 
 .statusbar {
-  margin:18px 0;
-  padding:15px 18px;
+  margin:14px 0;
+  padding:12px 14px;
   border:1px solid var(--line);
   background:#0b1925;
   display:flex;
@@ -86,24 +84,24 @@ header {
 
 #status {
   color:var(--amber);
-  font-size:14px;
+  font-size:12px;
   font-weight:700;
 }
 
 .dot {
-  width:10px;
-  height:10px;
+  width:8px;
+  height:8px;
   display:inline-block;
   border-radius:50%;
   background:var(--amber);
-  margin-right:10px;
+  margin-right:8px;
 }
 
 .connect {
   border:1px solid var(--cyan);
   color:var(--cyan);
   background:#102a38;
-  padding:13px 22px;
+  padding:11px 16px;
   border-radius:5px;
   font-weight:800;
   cursor:pointer;
@@ -114,45 +112,36 @@ header {
   cursor:wait;
 }
 
-/* AFFICHAGE PRINCIPAL */
-
 .grid {
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:20px;
-  align-items:stretch;
+  grid-template-columns:1.05fr .95fr;
+  gap:14px;
 }
 
 .panel {
   border:1px solid var(--line);
-  border-radius:10px;
+  border-radius:9px;
   overflow:hidden;
   background:linear-gradient(145deg,rgba(18,37,52,.97),rgba(8,21,32,.97));
   box-shadow:0 12px 35px #0005;
-  min-width:0;
 }
 
 .panel-title {
-  padding:16px 20px;
+  padding:11px 14px;
   border-bottom:1px solid var(--line);
   color:var(--cyan);
-  font-size:13px;
+  font-size:11px;
   font-weight:800;
   letter-spacing:.18em;
 }
 
-.panel-content {
-  padding:clamp(18px,2vw,30px);
-}
-
-/* CAMERA */
+.panel-content {padding:14px}
 
 .camera-frame {
   background:#02070b;
   border:1px solid #29475a;
   border-radius:6px;
-  min-height:300px;
-  height:clamp(300px,39vh,550px);
+  min-height:210px;
   display:grid;
   place-items:center;
   overflow:hidden;
@@ -160,35 +149,33 @@ header {
 
 #camera {
   width:100%;
-  height:100%;
+  min-height:210px;
+  max-height:320px;
   object-fit:contain;
   display:block;
 }
 
 .camera-note {
   color:var(--muted);
-  font-size:11px;
+  font-size:10px;
   text-align:center;
-  margin-top:12px;
+  margin-top:9px;
   line-height:1.5;
 }
 
-/* COMMANDES */
-
 .controls-layout {
   display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:25px;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
   align-items:center;
-  min-height:300px;
 }
 
 .pad {
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  grid-template-rows:repeat(3,95px);
-  gap:12px;
-  width:min(100%,480px);
+  grid-template-rows:repeat(3,64px);
+  gap:8px;
+  max-width:320px;
   margin:auto;
   touch-action:none;
   user-select:none;
@@ -196,10 +183,10 @@ header {
 
 .direction,.stop {
   border:1px solid #31566d;
-  border-radius:10px;
+  border-radius:8px;
   background:linear-gradient(145deg,#183448,#0b1d2b);
   color:var(--cyan);
-  font-size:34px;
+  font-size:24px;
   font-weight:900;
   cursor:pointer;
   touch-action:none;
@@ -218,7 +205,7 @@ header {
   grid-row:2;
   color:var(--red);
   border-color:#713b43;
-  font-size:17px;
+  font-size:13px;
 }
 
 #forward {grid-column:2;grid-row:1}
@@ -228,30 +215,29 @@ header {
 
 .side-controls {
   display:grid;
-  gap:25px;
+  gap:14px;
 }
 
 .control-label {
   color:var(--muted);
-  font-size:12px;
-  margin-bottom:12px;
+  font-size:10px;
+  margin-bottom:8px;
   letter-spacing:.16em;
 }
 
 .segmented {
   display:flex;
-  gap:10px;
+  gap:8px;
 }
 
 .segmented button {
   flex:1;
-  padding:17px 10px;
+  padding:11px 8px;
   background:#0a1823;
   border:1px solid var(--line);
-  border-radius:6px;
+  border-radius:5px;
   color:var(--muted);
   font-weight:800;
-  font-size:15px;
   cursor:pointer;
 }
 
@@ -276,15 +262,15 @@ input:disabled {
 
 .anti-state {
   color:var(--green);
-  font-size:13px;
+  font-size:11px;
   font-weight:800;
 }
 
 .switch {
   position:relative;
   display:inline-block;
-  width:55px;
-  height:30px;
+  width:48px;
+  height:26px;
 }
 
 .switch input {
@@ -305,8 +291,8 @@ input:disabled {
 .slider:before {
   content:"";
   position:absolute;
-  width:22px;
-  height:22px;
+  width:18px;
+  height:18px;
   left:4px;
   top:4px;
   border-radius:50%;
@@ -319,27 +305,24 @@ input:disabled {
 }
 
 .switch input:checked + .slider:before {
-  transform:translateX(25px);
+  transform:translateX(22px);
 }
-
-/* COMPTEUR */
 
 .gauge-wrap {
   display:flex;
   justify-content:center;
-  padding:10px 0 0;
+  padding:4px 0 0;
 }
 
 .gauge {
-  width:min(100%,470px);
-  overflow:visible;
+  width:min(100%,270px);
 }
 
 .gauge-label {
   text-align:center;
   color:var(--muted);
-  font-size:12px;
-  margin-top:5px;
+  font-size:10px;
+  margin-top:-2px;
   letter-spacing:.18em;
 }
 
@@ -347,27 +330,20 @@ input:disabled {
   display:flex;
   justify-content:space-between;
   gap:10px;
-  margin-top:18px;
+  margin-top:12px;
   color:var(--muted);
-  font-size:12px;
+  font-size:10px;
 }
 
 .quick-info strong {color:var(--text)}
 
-.gauge-number {
-  font-size:32px;
-  font-weight:900;
-}
-
 .footer {
   text-align:center;
   color:#587184;
-  font-size:10px;
+  font-size:9px;
   letter-spacing:.18em;
-  padding:25px 0 8px;
+  padding:18px 0 8px;
 }
-
-/* INTRO */
 
 #intro {
   position:fixed;
@@ -423,29 +399,13 @@ input:disabled {
   to {transform:translateX(260%)}
 }
 
-/* PETITS ECRANS */
-
-@media(max-width:850px) {
+@media(max-width:760px) {
   .page {padding:12px}
   .grid {grid-template-columns:1fr}
   .controls-layout {grid-template-columns:1fr}
-  .pad {
-    grid-template-rows:repeat(3,75px);
-    width:min(100%,390px);
-  }
-  .camera-frame {
-    min-height:200px;
-    height:35vh;
-  }
+  .pad {grid-template-rows:repeat(3,64px);width:min(100%,330px)}
   .statusbar {align-items:flex-start}
-}
-
-@media(max-width:480px) {
-  .brand {font-size:25px}
-  .tag {font-size:9px}
-  .panel-content {padding:15px}
-  .pad {grid-template-rows:repeat(3,65px)}
-  .direction {font-size:26px}
+  .camera-frame,#camera {min-height:180px}
 }
 </style>
 </head>
@@ -481,8 +441,6 @@ input:disabled {
 
 <div class="grid">
 
-<!-- CAMERA -->
-
 <section class="panel">
   <div class="panel-title">CAMÉRA EMBARQUÉE</div>
   <div class="panel-content">
@@ -490,8 +448,7 @@ input:disabled {
       <img id="camera"
         src="http://192.168.1.200:8080/video"
         alt="Caméra ENBOYA">
-      <div id="cameraError"
-        style="display:none;color:#8ba5b5;font-size:13px;padding:20px;text-align:center">
+      <div id="cameraError" style="display:none;color:#8ba5b5;font-size:11px;padding:20px;text-align:center">
         Flux caméra indisponible.
       </div>
     </div>
@@ -499,76 +456,43 @@ input:disabled {
   </div>
 </section>
 
-<!-- COMPTEUR -->
-
 <section class="panel">
   <div class="panel-title">INSTRUMENTATION</div>
   <div class="panel-content">
 
     <div class="gauge-wrap">
       <svg class="gauge" viewBox="0 0 320 190">
-
         <path d="M38 155 A122 122 0 0 1 282 155"
-          fill="none"
-          stroke="#20394a"
-          stroke-width="9"
+          fill="none" stroke="#20394a" stroke-width="8"
           stroke-linecap="round"/>
-
-        <path id="gaugeProgress"
-          d="M38 155 A122 122 0 0 1 282 155"
-          fill="none"
-          stroke="#35d9ee"
-          stroke-width="9"
-          stroke-linecap="round"
-          stroke-dasharray="383"
-          stroke-dashoffset="383"/>
 
         <g id="ticks"></g>
 
         <line id="needle"
-          x1="160" y1="155" x2="160" y2="45"
-          stroke="#35d9ee"
-          stroke-width="4"
+          x1="160" y1="155" x2="160" y2="52"
+          stroke="#35d9ee" stroke-width="3"
           stroke-linecap="round"
           transform="rotate(-90 160 155)"/>
 
-        <circle cx="160" cy="155" r="10" fill="#35d9ee"/>
+        <circle cx="160" cy="155" r="8" fill="#35d9ee"/>
 
-        <text x="160" y="122"
-          text-anchor="middle"
-          fill="#e8f5fb"
-          class="gauge-number"
-          id="speedReadout">0</text>
+        <text x="160" y="130" text-anchor="middle"
+          fill="#e8f5fb" font-size="22"
+          font-weight="800" id="speedReadout">0</text>
 
-        <text x="160" y="143"
-          text-anchor="middle"
-          fill="#8ba5b5"
-          font-size="10">POURCENT</text>
-
-        <text x="38" y="178"
-          text-anchor="middle"
-          fill="#8ba5b5"
-          font-size="9">0</text>
-
-        <text x="282" y="178"
-          text-anchor="middle"
-          fill="#8ba5b5"
-          font-size="9">100</text>
-
+        <text x="160" y="146" text-anchor="middle"
+          fill="#8ba5b5" font-size="8">PUISSANCE</text>
       </svg>
     </div>
 
-    <div class="gauge-label">PUISSANCE SÉLECTIONNÉE</div>
+    <div class="gauge-label">TABLEAU DE BORD ENBOYA</div>
 
     <div class="quick-info">
       <span>MODE : <strong id="modeReadout">ARRÊT</strong></span>
       <span>VITESSE : <strong id="speedReadoutSmall">50 %</strong></span>
     </div>
-
   </div>
 </section>
-
-<!-- COMMANDES -->
 
 <section class="panel">
   <div class="panel-title">COMMANDES DE DÉPLACEMENT</div>
@@ -614,8 +538,6 @@ input:disabled {
     </div>
   </div>
 </section>
-
-<!-- ETAT DU SYSTEME -->
 
 <section class="panel">
   <div class="panel-title">ÉTAT DU SYSTÈME</div>
@@ -685,82 +607,7 @@ const keyCommands = {
   ArrowRight:"R"
 };
 
-/* COMPTEUR ANIMÉ */
-
-const needle = document.getElementById("needle");
-const gaugeProgress = document.getElementById("gaugeProgress");
-const speedReadout = document.getElementById("speedReadout");
-
-const gaugeLength = gaugeProgress.getTotalLength();
-
-gaugeProgress.style.strokeDasharray = gaugeLength;
-gaugeProgress.style.strokeDashoffset = gaugeLength;
-
-let gaugeValue = 0;
-let gaugeAnimation = null;
-
-function animateGauge(target) {
-
-  if (gaugeAnimation) {
-    cancelAnimationFrame(gaugeAnimation);
-  }
-
-  const startValue = gaugeValue;
-  const difference = target - startValue;
-  const duration = 1300;
-  const startTime = performance.now();
-
-  function frame(now) {
-
-    const elapsed = Math.min((now - startTime) / duration,1);
-
-    /* Animation progressive et fluide */
-    const eased = 1 - Math.pow(1 - elapsed,3);
-
-    gaugeValue = startValue + difference * eased;
-
-    const displayedValue = Math.round(gaugeValue);
-
-    speedReadout.textContent = displayedValue;
-
-    /* Aiguille : -90 degrés = 0%, +90 degrés = 100% */
-    const angle = -90 + (gaugeValue * 1.8);
-
-    needle.setAttribute(
-      "transform",
-      `rotate(${angle} 160 155)`
-    );
-
-    /* Arc lumineux qui suit l'aiguille */
-    const offset = gaugeLength * (1 - gaugeValue / 100);
-
-    gaugeProgress.style.strokeDashoffset = offset;
-
-    if (elapsed < 1) {
-      gaugeAnimation = requestAnimationFrame(frame);
-    } else {
-      gaugeValue = target;
-      speedReadout.textContent = target;
-      gaugeAnimation = null;
-    }
-  }
-
-  gaugeAnimation = requestAnimationFrame(frame);
-}
-
-function updateSpeedDisplay(speed) {
-
-  speed1.classList.toggle("active",speed === 1);
-  speed2.classList.toggle("active",speed === 2);
-
-  document.getElementById("speedReadoutSmall")
-    .textContent = speed === 1 ? "50 %" : "100 %";
-
-  /* Le compteur vise 50 ou 100 selon le mode choisi */
-  animateGauge(speed === 1 ? 50 : 100);
-}
-
-/* STATUT */
+let selectedSpeed = 1;
 
 function updateStatus(text,color) {
   statusText.textContent = text;
@@ -769,7 +616,6 @@ function updateStatus(text,color) {
 }
 
 function updateAntiDisplay(enabled) {
-
   antiToggle.checked = enabled;
 
   antiStatus.textContent =
@@ -782,10 +628,17 @@ function updateAntiDisplay(enabled) {
     .textContent = enabled ? "ACTIVÉ" : "DÉSACTIVÉ";
 }
 
-/* ENVOI BLUETOOTH */
+function updateSpeedDisplay(speed) {
+  selectedSpeed = speed;
+
+  speed1.classList.toggle("active",speed === 1);
+  speed2.classList.toggle("active",speed === 2);
+
+  document.getElementById("speedReadoutSmall")
+    .textContent = speed === 1 ? "50 %" : "100 %";
+}
 
 function sendCommand(command) {
-
   if (!characteristic) return Promise.resolve();
 
   const activeCharacteristic = characteristic;
@@ -877,10 +730,7 @@ connectButton.addEventListener("click",async()=>{
     document.getElementById("linkState")
       .textContent = "NON CONNECTÉ";
 
-    updateStatus(
-      "Connexion impossible",
-      "#ff5555"
-    );
+    updateStatus("Connexion impossible","#ff5555");
   }
 });
 
@@ -936,7 +786,7 @@ antiToggle.addEventListener("change",async()=>{
   await sendCommand(enabled ? "A" : "a");
 });
 
-/* COMMANDES DE DÉPLACEMENT */
+/* COMMANDES */
 
 function getCurrentCommand() {
 
@@ -952,6 +802,57 @@ function getCurrentCommand() {
     ? commands[commands.length-1]
     : "S";
 }
+
+/* COMPTEUR PROGRESSIF */
+
+let gaugeValue = 0;
+let lastGaugeTime = performance.now();
+
+function animateGauge() {
+
+  const now = performance.now();
+  const delta = Math.min((now-lastGaugeTime)/1000,0.05);
+
+  lastGaugeTime = now;
+
+  const command = getCurrentCommand();
+
+  let target = 0;
+
+  if (command === "F" || command === "B") {
+    target = selectedSpeed === 1 ? 50 : 100;
+  }
+
+  const acceleration = 65;
+  const deceleration = 90;
+
+  if (gaugeValue < target) {
+    gaugeValue = Math.min(
+      target,
+      gaugeValue + acceleration*delta
+    );
+  } else if (gaugeValue > target) {
+    gaugeValue = Math.max(
+      target,
+      gaugeValue - deceleration*delta
+    );
+  }
+
+  const angle = -90 + (gaugeValue/100)*180;
+
+  document.getElementById("needle")
+    .setAttribute(
+      "transform",
+      `rotate(${angle} 160 155)`
+    );
+
+  document.getElementById("speedReadout")
+    .textContent = Math.round(gaugeValue);
+
+  requestAnimationFrame(animateGauge);
+}
+
+requestAnimationFrame(animateGauge);
 
 function refreshControls() {
 
@@ -1006,7 +907,7 @@ function stopAllControls() {
   sendCommand("S");
 }
 
-/* MAINTIEN DES COMMANDES : TOUTES LES 250 MS */
+/* MAINTIEN DES COMMANDES */
 
 setInterval(()=>{
 
@@ -1153,13 +1054,11 @@ for (let i=0;i<=20;i++) {
 /* INITIALISATION */
 
 updateAntiDisplay(true);
+updateSpeedDisplay(1);
 
 antiToggle.disabled = true;
 speed1.disabled = true;
 speed2.disabled = true;
-
-/* Démarrage du compteur vers 50 % */
-updateSpeedDisplay(1);
 
 document.getElementById("camera").addEventListener("error",()=>{
   document.getElementById("camera").style.display = "none";
