@@ -9,59 +9,74 @@
 <style>
 :root {
   --accent: #00b894;
-  --button-size: 100px;
+  --button-size: 85px;
   --gap: 12px;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
-  padding: 20px;
+  padding: 12px;
   background: #15191f;
   color: white;
   font-family: Arial, sans-serif;
   text-align: center;
 }
 
-h1 { margin-bottom: 5px; }
-.subtitle { color: #aaa; }
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 900px;
+  margin: auto;
+}
 
-button, select, input {
-  font: inherit;
+h1 {
+  font-size: 22px;
+  margin: 8px;
+}
+
+#status {
+  color: #ffcc66;
+  font-size: 13px;
 }
 
 #connect {
   background: var(--accent);
   color: #101010;
   border: none;
-  border-radius: 12px;
-  padding: 14px 22px;
+  border-radius: 10px;
+  padding: 11px 15px;
   font-weight: bold;
-  margin: 20px;
+  margin: 8px;
 }
 
-#status {
-  color: #ffcc66;
-  margin: 10px;
-}
-
-#controller {
-  display: grid;
-  grid-template-columns: repeat(3, var(--button-size));
-  grid-template-rows: repeat(3, var(--button-size));
-  gap: var(--gap);
+#mainLayout {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  margin: 35px auto;
-  touch-action: none;
+  gap: 18px;
+  max-width: 1000px;
+  margin: 20px auto;
+}
+
+.controlColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
 }
 
 .direction {
+  width: var(--button-size);
+  height: var(--button-size);
   border: 2px solid #555;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #303943;
   color: white;
-  font-size: 42px;
+  font-size: 35px;
   font-weight: bold;
   touch-action: none;
   user-select: none;
@@ -75,14 +90,44 @@ button, select, input {
   transform: scale(0.95);
 }
 
-#up { grid-column: 2; grid-row: 1; }
-#left { grid-column: 1; grid-row: 2; }
-#right { grid-column: 3; grid-row: 2; }
-#down { grid-column: 2; grid-row: 3; }
+#cameraContainer {
+  width: min(42vw, 420px);
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border: 2px solid #444;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+#camera {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+#cameraStatus {
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  right: 0;
+  color: white;
+  font-size: 11px;
+  background: #0009;
+  padding: 4px;
+}
+
+#settingsToggle {
+  background: #303943;
+  color: white;
+  border: 1px solid #555;
+  padding: 10px 18px;
+  border-radius: 10px;
+}
 
 .settings {
   max-width: 350px;
-  margin: 35px auto;
+  margin: 15px auto;
   padding: 18px;
   background: #222831;
   border-radius: 15px;
@@ -94,35 +139,97 @@ button, select, input {
   margin: 15px 0 6px;
 }
 
-.settings input, .settings select {
+.settings input {
   width: 100%;
 }
 
-#settingsToggle {
-  background: #303943;
-  color: white;
-  border: 1px solid #555;
-  padding: 10px 18px;
-  border-radius: 10px;
+.hidden {
+  display: none;
 }
 
-.hidden { display: none; }
+@media (orientation: portrait) {
+  #mainLayout {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  #cameraContainer {
+    order: -1;
+    width: 75vw;
+  }
+
+  .controlColumn {
+    flex-direction: row;
+  }
+}
+
+@media (max-height: 450px) and (orientation: landscape) {
+  body {
+    padding: 4px;
+  }
+
+  h1 {
+    font-size: 17px;
+    margin: 3px;
+  }
+
+  #connect {
+    padding: 7px 10px;
+    margin: 3px;
+  }
+
+  #mainLayout {
+    margin: 5px auto;
+    gap: 12px;
+  }
+
+  #cameraContainer {
+    width: min(38vw, 330px);
+  }
+
+  .direction {
+    width: min(var(--button-size), 17vh);
+    height: min(var(--button-size), 17vh);
+    font-size: 30px;
+  }
+
+  .controlColumn {
+    gap: 8px;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<h1>ENBOYA</h1>
-<p class="subtitle">Télécommande Bluetooth</p>
+<header>
+  <h1>ENBOYA</h1>
+  <div id="status">Bluetooth déconnecté</div>
+  <button id="connect">CONNECTER</button>
+</header>
 
-<button id="connect">CONNECTER LE ROBOT</button>
-<div id="status">Déconnecté</div>
+<div id="mainLayout">
 
-<div id="controller">
-  <button class="direction" id="up" data-command="F">▲</button>
-  <button class="direction" id="left" data-command="L">◀</button>
-  <button class="direction" id="right" data-command="R">▶</button>
-  <button class="direction" id="down" data-command="B">▼</button>
+  <!-- Commandes de direction -->
+  <div class="controlColumn">
+    <button class="direction" data-command="L">◀</button>
+    <button class="direction" data-command="R">▶</button>
+  </div>
+
+  <!-- Caméra Motorola -->
+  <div id="cameraContainer">
+    <img id="camera"
+         src="http://192.168.1.200:8080/video"
+         alt="Caméra ENBOYA">
+    <div id="cameraStatus">Connexion caméra...</div>
+  </div>
+
+  <!-- Commandes avancer / reculer -->
+  <div class="controlColumn">
+    <button class="direction" data-command="F">▲</button>
+    <button class="direction" data-command="B">▼</button>
+  </div>
+
 </div>
 
 <button id="settingsToggle">PERSONNALISER ⚙</button>
@@ -133,7 +240,7 @@ button, select, input {
   <input type="color" id="color" value="#00b894">
 
   <label>Taille des boutons</label>
-  <input type="range" id="size" min="65" max="145" value="100">
+  <input type="range" id="size" min="55" max="120" value="85">
 
   <label>Espacement</label>
   <input type="range" id="spacing" min="4" max="25" value="12">
@@ -146,23 +253,41 @@ let characteristic = null;
 let activeButton = null;
 
 const statusText = document.getElementById("status");
+const camera = document.getElementById("camera");
+const cameraStatus = document.getElementById("cameraStatus");
+
+camera.onload = () => {
+  cameraStatus.textContent = "CAMÉRA CONNECTÉE";
+};
+
+camera.onerror = () => {
+  cameraStatus.textContent = "CAMÉRA INDISPONIBLE";
+};
 
 async function connectRobot() {
   try {
+    if (!navigator.bluetooth) {
+      statusText.textContent = "Bluetooth Web non disponible";
+      return;
+    }
+
     statusText.textContent = "Recherche du HM-10...";
 
     device = await navigator.bluetooth.requestDevice({
-      filters: [{ services: ["0000ffe0-0000-1000-8000-00805f9b34fb"] }],
-      optionalServices: ["0000ffe0-0000-1000-8000-00805f9b34fb"]
+      filters: [{
+        services: ["0000ffe0-0000-1000-8000-00805f9b34fb"]
+      }]
     });
 
     device.addEventListener("gattserverdisconnected", () => {
       characteristic = null;
-      statusText.textContent = "Déconnecté";
+      statusText.textContent = "Bluetooth déconnecté";
       releaseButton();
+      document.getElementById("connect").textContent = "CONNECTER";
     });
 
     const server = await device.gatt.connect();
+
     const service = await server.getPrimaryService(
       "0000ffe0-0000-1000-8000-00805f9b34fb"
     );
@@ -171,8 +296,8 @@ async function connectRobot() {
       "0000ffe1-0000-1000-8000-00805f9b34fb"
     );
 
-    statusText.textContent = "Connecté : " + device.name;
-    document.getElementById("connect").textContent = "ROBOT CONNECTÉ";
+    statusText.textContent = "Bluetooth connecté";
+    document.getElementById("connect").textContent = "CONNECTÉ";
 
   } catch (error) {
     statusText.textContent = "Erreur : " + error.message;
@@ -191,7 +316,7 @@ async function sendCommand(command) {
       await characteristic.writeValue(data);
     }
   } catch (error) {
-    statusText.textContent = "Erreur d'envoi Bluetooth";
+    statusText.textContent = "Erreur Bluetooth";
   }
 }
 
@@ -226,14 +351,20 @@ document.querySelectorAll(".direction").forEach(button => {
   button.addEventListener("lostpointercapture", releaseButton);
 });
 
-document.getElementById("connect").addEventListener("click", connectRobot);
+document.getElementById("connect").addEventListener(
+  "click", connectRobot
+);
 
-document.getElementById("settingsToggle").addEventListener("click", () => {
-  document.getElementById("settings").classList.toggle("hidden");
-});
+document.getElementById("settingsToggle").addEventListener(
+  "click", () => {
+    document.getElementById("settings").classList.toggle("hidden");
+  }
+);
 
 document.getElementById("color").addEventListener("input", event => {
-  document.documentElement.style.setProperty("--accent", event.target.value);
+  document.documentElement.style.setProperty(
+    "--accent", event.target.value
+  );
 });
 
 document.getElementById("size").addEventListener("input", event => {
@@ -249,6 +380,7 @@ document.getElementById("spacing").addEventListener("input", event => {
 });
 
 window.addEventListener("pagehide", releaseButton);
+window.addEventListener("blur", releaseButton);
 </script>
 
 </body>
