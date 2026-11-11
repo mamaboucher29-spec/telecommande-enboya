@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ENBOYA - Télécommande</title>
+
+<style>
+:root {
+  --accent: #00b894;
+  --button-size: 100px;
+  --gap: 12px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 20px;
+  background: #15191f;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+h1 { margin-bottom: 5px; }
+.subtitle { color: #aaa; }
+
+button, select, input {
+  font: inherit;
+}
+
+#connect {
+  background: var(--accent);
+  color: #101010;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 22px;
+  font-weight: bold;
+  margin: 20px;
+}
+
+#status {
+  color: #ffcc66;
+  margin: 10px;
+}
+
+#controller {
+  display: grid;
+  grid-template-columns: repeat(3, var(--button-size));
+  grid-template-rows: repeat(3, var(--button-size));
+  gap: var(--gap);
+  justify-content: center;
+  margin: 35px auto;
+  touch-action: none;
+}
+
+.direction {
+  border: 2px solid #555;
+  border-radius: 18px;
+  background: #303943;
+  color: white;
+  font-size: 42px;
+  font-weight: bold;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.direction.active {
+  background: var(--accent);
+  color: #101010;
+  border-color: white;
+  transform: scale(0.95);
+}
+
+#up { grid-column: 2; grid-row: 1; }
+#left { grid-column: 1; grid-row: 2; }
+#right { grid-column: 3; grid-row: 2; }
+#down { grid-column: 2; grid-row: 3; }
+
+.settings {
+  max-width: 350px;
+  margin: 35px auto;
+  padding: 18px;
+  background: #222831;
+  border-radius: 15px;
+  text-align: left;
+}
+
+.settings label {
+  display: block;
+  margin: 15px 0 6px;
+}
+
+.settings input, .settings select {
+  width: 100%;
+}
+
+#settingsToggle {
+  background: #303943;
+  color: white;
+  border: 1px solid #555;
+  padding: 10px 18px;
+  border-radius: 10px;
+}
+
+.hidden { display: none; }
+</style>
+</head>
+
+<body>
+
+<h1>ENBOYA</h1>
+<p class="subtitle">Télécommande Bluetooth</p>
+
+<button id="connect">CONNECTER LE ROBOT</button>
+<div id="status">Déconnecté</div>
+
+<div id="controller">
+  <button class="direction" id="up" data-command="F">▲</button>
+  <button class="direction" id="left" data-command="L">◀</button>
+  <button class="direction" id="right" data-command="R">▶</button>
+  <button class="direction" id="down" data-command="B">▼</button>
+</div>
+
+<button id="settingsToggle">PERSONNALISER ⚙</button>
+
+<div class="settings hidden" id="settings">
+
+  <label>Couleur des boutons</label>
+  <input type="color" id="color" value="#00b894">
+
+  <label>Taille des boutons</label>
+  <input type="range" id="size" min="65" max="145" value="100">
+
+  <label>Espacement</label>
+  <input type="range" id="spacing" min="4" max="25" value="12">
+
+</div>
+
+<script>
+let device = null;
+let characteristic = null;
+let activeButton = null;
+
+const statusText = document.getElementById("status");
+
+async function connectRobot() {
+  try {
+    statusText.textContent = "Recherche du HM-10...";
+
+    device = await navigator.bluetooth.requestDevice({
+      filters: [{ services: ["0000ffe0-0000-1000-8000-00805f9b34fb"] }],
+      optionalServices: ["0000ffe0-0000-1000-8000-00805f9b34fb"]
+    });
+
+    device.addEventListener("gattserverdisconnected", () => {
+      characteristic = null;
+      statusText.textContent = "Déconnecté";
+      releaseButton();
+    });
+
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService(
+      "0000ffe0-0000-1000-8000-00805f9b34fb"
+    );
+
+    characteristic = await service.getCharacteristic(
+      "0000ffe1-0000-1000-8000-00805f9b34fb"
+    );
+
+    statusText.textContent = "Connecté : " + device.name;
+    document.getElementById("connect").textContent = "ROBOT CONNECTÉ";
+
+  } catch (error) {
+    statusText.textContent = "Erreur : " + error.message;
+  }
+}
+
+async function sendCommand(command) {
+  if (!characteristic) return;
+
+  try {
+    const data = new TextEncoder().encode(command);
+
+    if (characteristic.properties.writeWithoutResponse) {
+      await characteristic.writeValueWithoutResponse(data);
+    } else {
+      await characteristic.writeValue(data);
+    }
+  } catch (error) {
+    statusText.textContent = "Erreur d'envoi Bluetooth";
+  }
+}
+
+function releaseButton() {
+  if (activeButton) {
+    activeButton.classList.remove("active");
+    activeButton = null;
+    sendCommand("S");
+  }
+}
+
+document.querySelectorAll(".direction").forEach(button => {
+
+  button.addEventListener("pointerdown", event => {
+    event.preventDefault();
+
+    if (!characteristic || activeButton) return;
+
+    activeButton = button;
+    button.classList.add("active");
+    button.setPointerCapture(event.pointerId);
+
+    sendCommand(button.dataset.command);
+  });
+
+  button.addEventListener("pointerup", event => {
+    event.preventDefault();
+    releaseButton();
+  });
+
+  button.addEventListener("pointercancel", releaseButton);
+  button.addEventListener("lostpointercapture", releaseButton);
+});
+
+document.getElementById("connect").addEventListener("click", connectRobot);
+
+document.getElementById("settingsToggle").addEventListener("click", () => {
+  document.getElementById("settings").classList.toggle("hidden");
+});
+
+document.getElementById("color").addEventListener("input", event => {
+  document.documentElement.style.setProperty("--accent", event.target.value);
+});
+
+document.getElementById("size").addEventListener("input", event => {
+  document.documentElement.style.setProperty(
+    "--button-size", event.target.value + "px"
+  );
+});
+
+document.getElementById("spacing").addEventListener("input", event => {
+  document.documentElement.style.setProperty(
+    "--gap", event.target.value + "px"
+  );
+});
+
+window.addEventListener("pagehide", releaseButton);
+</script>
+
+</body>
+</html>
