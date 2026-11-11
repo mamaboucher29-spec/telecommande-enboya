@@ -32,40 +32,55 @@ body {
   overflow: hidden;
   font-family: Arial, sans-serif;
   color: var(--text);
+
   background:
-    radial-gradient(ellipse at 50% 45%, #142b3c 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 45%, #173b52 0%, transparent 65%),
+    radial-gradient(ellipse at 10% 90%, #06304b 0%, transparent 45%),
+    radial-gradient(ellipse at 90% 10%, #102b40 0%, transparent 45%),
     repeating-linear-gradient(
-      135deg,
-      rgba(255,255,255,.018) 0px,
-      rgba(255,255,255,.018) 1px,
-      transparent 1px,
-      transparent 5px
+      45deg,
+      #ffffff09 0px,
+      #ffffff09 2px,
+      transparent 2px,
+      transparent 6px
     ),
-    linear-gradient(135deg, #05090e, #101923 50%, #05090e);
+    repeating-linear-gradient(
+      -45deg,
+      #00000035 0px,
+      #00000035 2px,
+      transparent 2px,
+      transparent 6px
+    ),
+    linear-gradient(135deg, #030609, #101b27 50%, #030609);
 }
 
-/* DETAILS DU FOND */
+/* FOND COCKPIT */
 
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: .35;
+  opacity: .55;
+
   background:
-    linear-gradient(90deg, transparent 49.8%, #16a9ff22 50%, transparent 50.2%),
-    linear-gradient(0deg, transparent 49.8%, #16a9ff12 50%, transparent 50.2%);
-  background-size: 90px 90px;
-  mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+    linear-gradient(90deg, transparent 49.8%, #16a9ff35 50%, transparent 50.2%),
+    linear-gradient(0deg, transparent 49.8%, #16a9ff20 50%, transparent 50.2%),
+    radial-gradient(ellipse at center, transparent 20%, #00000099 100%);
+
+  background-size: 90px 90px, 90px 90px, 100% 100%;
 }
 
 body::after {
   content: "";
   position: fixed;
   inset: 10px;
-  border: 1px solid #2b526b55;
+  border: 1px solid #2b526b88;
   border-radius: 12px;
   pointer-events: none;
+  box-shadow:
+    inset 0 0 25px #16a9ff0b,
+    0 0 20px #0008;
 }
 
 /* HEADER */
@@ -76,9 +91,15 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, #080d13, #132331, #080d13);
+
+  background:
+    linear-gradient(90deg, #05090e, #142b3c, #05090e);
+
   border-bottom: 1px solid #1b526f;
-  box-shadow: 0 4px 25px #0008;
+  box-shadow:
+    0 4px 25px #0008,
+    0 1px 12px #16a9ff22;
+
   position: relative;
   z-index: 2;
 }
@@ -118,10 +139,17 @@ header {
   border-radius: 6px;
   padding: 10px 15px;
   color: white;
-  background: linear-gradient(135deg, #123e5a, #0b1c2b);
+
+  background:
+    linear-gradient(135deg, #123e5a, #0b1c2b);
+
   box-shadow: 0 0 15px #16a9ff22;
   font-weight: bold;
   cursor: pointer;
+}
+
+#connect:hover {
+  box-shadow: 0 0 20px #16a9ff66;
 }
 
 /* INTERFACE PRINCIPALE */
@@ -164,21 +192,30 @@ main {
   font-size: clamp(28px, 5vw, 43px);
   font-weight: bold;
   cursor: pointer;
+
   background:
     linear-gradient(145deg, #203d51, #101c29 70%);
+
   box-shadow:
     inset 0 1px 1px #ffffff22,
     0 6px 0 #050a10,
     0 10px 22px #0009,
     0 0 15px #16a9ff12;
-  transition: transform .08s, background .08s, box-shadow .08s;
+
+  transition:
+    transform .08s,
+    background .08s,
+    box-shadow .08s;
 }
 
 .direction.active {
   transform: translateY(5px);
   color: white;
   border-color: var(--cyan);
-  background: linear-gradient(145deg, #087fbd, #075078);
+
+  background:
+    linear-gradient(145deg, #087fbd, #075078);
+
   box-shadow:
     inset 0 0 15px #ffffff22,
     0 1px 0 #050a10,
@@ -194,10 +231,13 @@ main {
   padding: 8px;
   border-radius: 13px;
   border: 1px solid #28617f;
-  background: linear-gradient(145deg, #172a38, #05090e);
+
+  background:
+    linear-gradient(145deg, #172a38, #05090e);
+
   box-shadow:
     0 0 0 3px #0a1119,
-    0 0 25px #16a9ff22,
+    0 0 25px #16a9ff33,
     0 15px 40px #0009;
 }
 
@@ -214,6 +254,7 @@ main {
 
 .camera-indicator {
   color: var(--green);
+  text-shadow: 0 0 8px #35e69a88;
 }
 
 #camera {
@@ -243,8 +284,10 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   background:
     radial-gradient(ellipse at center, #172d40, #060a10 75%);
+
   transition: opacity .7s ease, visibility .7s;
 }
 
@@ -324,7 +367,10 @@ main {
 }
 
 @keyframes logoIn {
-  to { opacity: 1; transform: scale(1); }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes fadeIn {
@@ -332,7 +378,10 @@ main {
 }
 
 @keyframes tickOn {
-  to { opacity: 1; stroke: var(--tick-color); }
+  to {
+    opacity: 1;
+    stroke: var(--tick-color);
+  }
 }
 
 @keyframes needleMove {
@@ -356,7 +405,10 @@ header, main {
 }
 
 @keyframes interfaceIn {
-  to { opacity: 1; transform: translateY(0); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* MOBILE */
@@ -436,20 +488,25 @@ header, main {
       </defs>
 
       <path d="M 45 155 A 115 115 0 0 1 275 155"
-            fill="none" stroke="#20394d" stroke-width="8"
+            fill="none"
+            stroke="#20394d"
+            stroke-width="8"
             stroke-linecap="round"/>
 
       <g id="ticks"></g>
 
-      <text x="160" y="125" text-anchor="middle"
+      <text x="160" y="125"
+            text-anchor="middle"
             class="gauge-number">ENBOYA</text>
 
-      <text x="160" y="143" text-anchor="middle"
+      <text x="160" y="143"
+            text-anchor="middle"
             class="gauge-unit">SYSTEM START</text>
 
       <g class="needle">
         <line x1="160" y1="155" x2="160" y2="48"
-              stroke="url(#needleColor)" stroke-width="4"
+              stroke="url(#needleColor)"
+              stroke-width="4"
               stroke-linecap="round"/>
         <circle cx="160" cy="155" r="8" fill="#19a7ff"/>
       </g>
@@ -590,10 +647,14 @@ function getCurrentCommand() {
   }
 
   for (const key of pressedKeys) {
-    if (keyCommands[key]) commands.push(keyCommands[key]);
+    if (keyCommands[key]) {
+      commands.push(keyCommands[key]);
+    }
   }
 
-  return commands.length ? commands[commands.length - 1] : "S";
+  return commands.length
+    ? commands[commands.length - 1]
+    : "S";
 }
 
 function refreshControls() {
@@ -602,10 +663,16 @@ function refreshControls() {
   directionButtons.forEach(button => {
     const command = button.dataset.command;
 
-    const pointerActive = [...pressedPointers.values()].includes(command);
-    const keyActive = [...pressedKeys].some(key => keyCommands[key] === command);
+    const pointerActive =
+      [...pressedPointers.values()].includes(command);
 
-    button.classList.toggle("active", pointerActive || keyActive);
+    const keyActive =
+      [...pressedKeys].some(key => keyCommands[key] === command);
+
+    button.classList.toggle(
+      "active",
+      pointerActive || keyActive
+    );
   });
 }
 
@@ -623,14 +690,20 @@ function stopAllControls() {
 /* BOUTONS TACTILES */
 
 directionButtons.forEach(button => {
-  button.addEventListener("contextmenu", event => event.preventDefault());
+
+  button.addEventListener("contextmenu", event => {
+    event.preventDefault();
+  });
 
   button.addEventListener("pointerdown", event => {
     event.preventDefault();
 
     if (!characteristic) return;
 
-    pressedPointers.set(event.pointerId, button.dataset.command);
+    pressedPointers.set(
+      event.pointerId,
+      button.dataset.command
+    );
 
     try {
       button.setPointerCapture(event.pointerId);
@@ -653,49 +726,70 @@ directionButtons.forEach(button => {
 
 /* CLAVIER PC : FLECHES + ESPACE */
 
-document.addEventListener("keydown", event => {
-  if (event.key === " " || event.key.startsWith("Arrow")) {
-    event.preventDefault();
+function getKeyboardKey(event) {
+  if (event.code && event.code.startsWith("Arrow")) {
+    return event.code;
   }
 
-  if (!characteristic) return;
+  return event.key;
+}
 
-  if (event.key === " ") {
-    if (event.repeat) return;
+window.addEventListener("keydown", event => {
+  const key = getKeyboardKey(event);
+
+  /* ESPACE = ARRET */
+
+  if (key === "Space" || key === " ") {
+    event.preventDefault();
+
+    if (event.repeat || !characteristic) return;
 
     pressedKeys.clear();
     pressedPointers.clear();
     refreshControls();
+
     return;
   }
 
-  if (!(event.key in keyCommands)) return;
-  if (event.repeat || pressedKeys.has(event.key)) return;
+  /* TOUCHES DIRECTIONNELLES */
 
-  pressedKeys.add(event.key);
-  refreshControls();
-});
-
-document.addEventListener("keyup", event => {
-  if (event.key === " ") {
-    event.preventDefault();
-    refreshControls();
-    return;
-  }
-
-  if (!pressedKeys.has(event.key)) return;
+  if (!(key in keyCommands)) return;
 
   event.preventDefault();
-  pressedKeys.delete(event.key);
+
+  if (!characteristic) return;
+  if (event.repeat || pressedKeys.has(key)) return;
+
+  pressedKeys.add(key);
   refreshControls();
-});
+
+}, true);
+
+window.addEventListener("keyup", event => {
+  const key = getKeyboardKey(event);
+
+  if (key === "Space" || key === " ") {
+    event.preventDefault();
+    return;
+  }
+
+  if (!pressedKeys.has(key)) return;
+
+  event.preventDefault();
+
+  pressedKeys.delete(key);
+  refreshControls();
+
+}, true);
 
 /* ARRET EN CAS DE PERTE DE FOCUS */
 
 window.addEventListener("blur", stopAllControls);
 
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) stopAllControls();
+  if (document.hidden) {
+    stopAllControls();
+  }
 });
 
 /* GRADUATIONS DU COMPTEUR */
@@ -711,7 +805,8 @@ for (let i = 0; i <= 20; i++) {
   const y2 = 155 + Math.sin(angle) * 128;
 
   const tick = document.createElementNS(
-    "http://www.w3.org/2000/svg", "line"
+    "http://www.w3.org/2000/svg",
+    "line"
   );
 
   tick.setAttribute("x1", x1);
@@ -721,6 +816,7 @@ for (let i = 0; i <= 20; i++) {
   tick.setAttribute("class", "tick");
 
   let color = "#35e69a";
+
   if (i >= 13) color = "#ffbd55";
   if (i >= 17) color = "#ff4545";
 
@@ -729,6 +825,8 @@ for (let i = 0; i <= 20; i++) {
 
   ticks.appendChild(tick);
 }
+
+/* ANIMATION DES GRADUATIONS */
 
 setTimeout(() => {
   document.querySelectorAll(".tick").forEach(tick => {
