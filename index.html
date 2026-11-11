@@ -5,13 +5,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080d13">
-<title>ENBOYA - Télécommande</title>
+<title>ENBOYA | Control System</title>
 
 <style>
 :root {
-  --bg: #080d13;
-  --blue: #19a7ff;
+  --blue: #16a9ff;
+  --cyan: #37d9ff;
   --green: #35e69a;
+  --red: #ff4545;
+  --bg: #080d13;
+  --panel: #111c28;
   --text: #eaf3fc;
 }
 
@@ -26,78 +29,119 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(ellipse at center, #142536, #080d13 75%);
-  color: var(--text);
-  font-family: Arial, sans-serif;
   overflow: hidden;
+  font-family: Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 50% 45%, #142b3c 0%, transparent 60%),
+    repeating-linear-gradient(
+      135deg,
+      rgba(255,255,255,.018) 0px,
+      rgba(255,255,255,.018) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    linear-gradient(135deg, #05090e, #101923 50%, #05090e);
 }
 
-button {
-  font: inherit;
-  touch-action: none;
+/* DETAILS DU FOND */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .35;
+  background:
+    linear-gradient(90deg, transparent 49.8%, #16a9ff22 50%, transparent 50.2%),
+    linear-gradient(0deg, transparent 49.8%, #16a9ff12 50%, transparent 50.2%);
+  background-size: 90px 90px;
+  mask-image: radial-gradient(ellipse at center, black, transparent 80%);
 }
 
-/* BARRE DU HAUT */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 10px;
+  border: 1px solid #2b526b55;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+/* HEADER */
 
 header {
-  height: 58px;
-  padding: 0 18px;
+  height: 64px;
+  padding: 0 25px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #25394b;
-  background: rgba(8,13,19,.85);
+  background: linear-gradient(90deg, #080d13, #132331, #080d13);
+  border-bottom: 1px solid #1b526f;
+  box-shadow: 0 4px 25px #0008;
   position: relative;
   z-index: 2;
 }
 
 .brand {
-  font-size: 21px;
+  font-size: 23px;
   font-weight: 900;
-  letter-spacing: 4px;
+  letter-spacing: 5px;
+  text-shadow: 0 0 15px #16a9ff55;
 }
 
 .brand span {
   color: var(--blue);
 }
 
+.header-subtitle {
+  font-size: 9px;
+  color: #6e91a9;
+  letter-spacing: 3px;
+  margin-top: 3px;
+}
+
 .connection {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 #status {
-  font-size: 12px;
+  font-size: 11px;
   color: #ffbd55;
+  letter-spacing: 1px;
 }
 
 #connect {
-  background: #152c40;
   border: 1px solid var(--blue);
+  border-radius: 6px;
+  padding: 10px 15px;
   color: white;
-  padding: 9px 14px;
-  border-radius: 8px;
+  background: linear-gradient(135deg, #123e5a, #0b1c2b);
+  box-shadow: 0 0 15px #16a9ff22;
   font-weight: bold;
+  cursor: pointer;
 }
 
-/* DISPOSITION */
+/* INTERFACE PRINCIPALE */
 
 main {
-  height: calc(100vh - 58px);
-  min-height: 300px;
+  height: calc(100vh - 64px);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: clamp(12px, 3vw, 42px);
-  padding: 15px;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .control-group {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 13px;
   flex-shrink: 0;
 }
 
@@ -109,38 +153,67 @@ main {
   flex-direction: column;
 }
 
+/* BOUTONS */
+
 .direction {
   width: clamp(65px, 10vw, 105px);
   height: clamp(65px, 10vw, 105px);
-  border-radius: 19px;
-  border: 1px solid #31516a;
-  background: linear-gradient(145deg, #1b3449, #101d2a);
-  color: white;
-  font-size: clamp(27px, 5vw, 42px);
+  border-radius: 17px;
+  border: 1px solid #28617f;
+  color: #eaf8ff;
+  font-size: clamp(28px, 5vw, 43px);
   font-weight: bold;
-  box-shadow: 0 7px 0 #071019, 0 10px 20px #0008;
   cursor: pointer;
-  transition: transform .08s, background .08s;
+  background:
+    linear-gradient(145deg, #203d51, #101c29 70%);
+  box-shadow:
+    inset 0 1px 1px #ffffff22,
+    0 6px 0 #050a10,
+    0 10px 22px #0009,
+    0 0 15px #16a9ff12;
+  transition: transform .08s, background .08s, box-shadow .08s;
 }
 
 .direction.active {
   transform: translateY(5px);
-  background: linear-gradient(145deg, #087ec4, #07517f);
-  box-shadow: 0 2px 0 #071019, 0 4px 12px #0008;
+  color: white;
+  border-color: var(--cyan);
+  background: linear-gradient(145deg, #087fbd, #075078);
+  box-shadow:
+    inset 0 0 15px #ffffff22,
+    0 1px 0 #050a10,
+    0 0 25px #16a9ff88;
 }
 
 /* CAMERA */
 
 .camera-panel {
   flex: 1;
-  max-width: 650px;
+  max-width: 690px;
   min-width: 120px;
-  background: #05090e;
-  border: 1px solid #29445a;
-  border-radius: 14px;
-  padding: 7px;
-  box-shadow: 0 10px 35px #0008;
-  overflow: hidden;
+  padding: 8px;
+  border-radius: 13px;
+  border: 1px solid #28617f;
+  background: linear-gradient(145deg, #172a38, #05090e);
+  box-shadow:
+    0 0 0 3px #0a1119,
+    0 0 25px #16a9ff22,
+    0 15px 40px #0009;
+}
+
+.camera-top {
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5px 6px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #7da5bd;
+}
+
+.camera-indicator {
+  color: var(--green);
 }
 
 #camera {
@@ -148,29 +221,30 @@ main {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: contain;
-  background: #030609;
-  border-radius: 8px;
+  background: #020507;
+  border-radius: 6px;
 }
 
 .camera-label {
   text-align: center;
-  color: #7893aa;
-  font-size: 10px;
-  letter-spacing: 2px;
-  padding: 7px 0 2px;
+  color: #7194aa;
+  font-size: 9px;
+  letter-spacing: 3px;
+  padding: 8px 0 2px;
 }
 
-/* INTRODUCTION */
+/* INTRO */
 
 #intro {
   position: fixed;
   inset: 0;
   z-index: 10;
-  background: radial-gradient(ellipse at center, #172d40, #060a10 75%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background:
+    radial-gradient(ellipse at center, #172d40, #060a10 75%);
   transition: opacity .7s ease, visibility .7s;
 }
 
@@ -285,12 +359,12 @@ header, main {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ECRANS PLUS PETITS */
+/* MOBILE */
 
 @media (max-width: 650px) {
   header {
-    height: 48px;
-    padding: 0 10px;
+    height: 50px;
+    padding: 0 12px;
   }
 
   .brand {
@@ -298,18 +372,22 @@ header, main {
     letter-spacing: 2px;
   }
 
+  .header-subtitle {
+    display: none;
+  }
+
   #status {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   #connect {
     padding: 7px 9px;
-    font-size: 11px;
+    font-size: 10px;
   }
 
   main {
-    height: calc(100vh - 48px);
-    gap: 8px;
+    height: calc(100vh - 50px);
+    gap: 7px;
     padding: 7px;
   }
 
@@ -318,7 +396,7 @@ header, main {
   }
 
   .direction {
-    width: clamp(48px, 13vw, 75px);
+    width: clamp(47px, 13vw, 75px);
     height: clamp(55px, 16vw, 75px);
     border-radius: 12px;
     font-size: 27px;
@@ -328,8 +406,13 @@ header, main {
     padding: 4px;
   }
 
+  .camera-top {
+    font-size: 7px;
+    height: 16px;
+  }
+
   .camera-label {
-    font-size: 8px;
+    font-size: 7px;
   }
 }
 </style>
@@ -376,10 +459,13 @@ header, main {
   <div class="loading-text">INITIALISATION...</div>
 </div>
 
-<!-- EN-TETE -->
+<!-- HEADER -->
 
 <header>
-  <div class="brand">EN<span>BOYA</span></div>
+  <div>
+    <div class="brand">EN<span>BOYA</span></div>
+    <div class="header-subtitle">ROBOT CONTROL SYSTEM</div>
+  </div>
 
   <div class="connection">
     <span id="status">Bluetooth déconnecté</span>
@@ -387,7 +473,7 @@ header, main {
   </div>
 </header>
 
-<!-- INTERFACE PRINCIPALE -->
+<!-- COMMANDES -->
 
 <main>
 
@@ -397,9 +483,15 @@ header, main {
   </div>
 
   <div class="camera-panel">
+    <div class="camera-top">
+      <span>ENBOYA / LIVE FEED</span>
+      <span class="camera-indicator">● LIVE</span>
+    </div>
+
     <img id="camera"
          src="http://192.168.1.200:8080/video"
          alt="Caméra ENBOYA">
+
     <div class="camera-label">CAMÉRA EMBARQUÉE</div>
   </div>
 
@@ -411,7 +503,7 @@ header, main {
 </main>
 
 <script>
-/* BLUETOOTH */
+/* BLUETOOTH HM-10 */
 
 const SERVICE_UUID = "0000ffe0-0000-1000-8000-00805f9b34fb";
 const CHARACTERISTIC_UUID = "0000ffe1-0000-1000-8000-00805f9b34fb";
@@ -437,7 +529,7 @@ connectButton.addEventListener("click", async () => {
 
     device.addEventListener("gattserverdisconnected", () => {
       characteristic = null;
-      releaseAllControls();
+      stopAllControls();
       updateStatus("Bluetooth déconnecté", "#ff5555");
       connectButton.textContent = "CONNECTER";
     });
@@ -476,32 +568,59 @@ async function sendCommand(command) {
   }
 }
 
-/* COMMANDES TACTILES */
+/* GESTION DES TOUCHES ET BOUTONS */
 
 const directionButtons = document.querySelectorAll(".direction");
+
 const pressedPointers = new Map();
+const pressedKeys = new Set();
 
-function getActiveCommand() {
-  const active = [...pressedPointers.values()];
+const keyCommands = {
+  ArrowUp: "F",
+  ArrowDown: "B",
+  ArrowLeft: "L",
+  ArrowRight: "R"
+};
 
-  return active.length ? active[active.length - 1] : "S";
+function getCurrentCommand() {
+  const commands = [];
+
+  for (const command of pressedPointers.values()) {
+    commands.push(command);
+  }
+
+  for (const key of pressedKeys) {
+    if (keyCommands[key]) commands.push(keyCommands[key]);
+  }
+
+  return commands.length ? commands[commands.length - 1] : "S";
 }
 
-function updateTouchCommand() {
-  sendCommand(getActiveCommand());
+function refreshControls() {
+  sendCommand(getCurrentCommand());
 
   directionButtons.forEach(button => {
-    button.classList.toggle(
-      "active",
-      [...pressedPointers.values()].includes(button.dataset.command)
-    );
+    const command = button.dataset.command;
+
+    const pointerActive = [...pressedPointers.values()].includes(command);
+    const keyActive = [...pressedKeys].some(key => keyCommands[key] === command);
+
+    button.classList.toggle("active", pointerActive || keyActive);
   });
 }
 
-function releaseAllControls() {
+function stopAllControls() {
   pressedPointers.clear();
-  directionButtons.forEach(button => button.classList.remove("active"));
+  pressedKeys.clear();
+
+  directionButtons.forEach(button => {
+    button.classList.remove("active");
+  });
+
+  sendCommand("S");
 }
+
+/* BOUTONS TACTILES */
 
 directionButtons.forEach(button => {
   button.addEventListener("contextmenu", event => event.preventDefault());
@@ -512,15 +631,19 @@ directionButtons.forEach(button => {
     if (!characteristic) return;
 
     pressedPointers.set(event.pointerId, button.dataset.command);
-    button.setPointerCapture(event.pointerId);
-    updateTouchCommand();
+
+    try {
+      button.setPointerCapture(event.pointerId);
+    } catch (error) {}
+
+    refreshControls();
   });
 
   function releasePointer(event) {
     if (!pressedPointers.has(event.pointerId)) return;
 
     pressedPointers.delete(event.pointerId);
-    updateTouchCommand();
+    refreshControls();
   }
 
   button.addEventListener("pointerup", releasePointer);
@@ -528,65 +651,51 @@ directionButtons.forEach(button => {
   button.addEventListener("lostpointercapture", releasePointer);
 });
 
-/* COMMANDES AU CLAVIER DU PC */
-
-const keyboardCommands = {
-  "z": "F",
-  "s": "B",
-  "q": "L",
-  "d": "R",
-  " ": "S"
-};
-
-const pressedKeys = new Set();
-
-function updateKeyboardCommand() {
-  if (pressedKeys.size === 0) return;
-
-  const keys = [...pressedKeys];
-  sendCommand(keyboardCommands[keys[keys.length - 1]]);
-}
+/* CLAVIER PC : FLECHES + ESPACE */
 
 document.addEventListener("keydown", event => {
-  const key = event.key.toLowerCase();
+  if (event.key === " " || event.key.startsWith("Arrow")) {
+    event.preventDefault();
+  }
 
-  if (!(key in keyboardCommands)) return;
+  if (!characteristic) return;
 
-  event.preventDefault();
+  if (event.key === " ") {
+    if (event.repeat) return;
 
-  if (!characteristic || event.repeat) return;
+    pressedKeys.clear();
+    pressedPointers.clear();
+    refreshControls();
+    return;
+  }
 
-  pressedKeys.add(key);
-  updateKeyboardCommand();
+  if (!(event.key in keyCommands)) return;
+  if (event.repeat || pressedKeys.has(event.key)) return;
+
+  pressedKeys.add(event.key);
+  refreshControls();
 });
 
 document.addEventListener("keyup", event => {
-  const key = event.key.toLowerCase();
+  if (event.key === " ") {
+    event.preventDefault();
+    refreshControls();
+    return;
+  }
 
-  if (!pressedKeys.has(key)) return;
+  if (!pressedKeys.has(event.key)) return;
 
   event.preventDefault();
-  pressedKeys.delete(key);
-
-  if (pressedKeys.size === 0) {
-    sendCommand("S");
-  } else {
-    updateKeyboardCommand();
-  }
+  pressedKeys.delete(event.key);
+  refreshControls();
 });
 
-/* ARRET SI LA PAGE PERD LE FOCUS */
+/* ARRET EN CAS DE PERTE DE FOCUS */
 
-function stopAllCommands() {
-  releaseAllControls();
-  pressedKeys.clear();
-  sendCommand("S");
-}
-
-window.addEventListener("blur", stopAllCommands);
+window.addEventListener("blur", stopAllControls);
 
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) stopAllCommands();
+  if (document.hidden) stopAllControls();
 });
 
 /* GRADUATIONS DU COMPTEUR */
@@ -627,7 +736,7 @@ setTimeout(() => {
   });
 }, 700);
 
-/* FIN DU DEMARRAGE */
+/* FIN DE L'INTRO */
 
 setTimeout(() => {
   document.getElementById("intro").classList.add("finished");
