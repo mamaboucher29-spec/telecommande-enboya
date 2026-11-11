@@ -10,17 +10,15 @@
 <style>
 :root {
   --bg: #080d13;
-  --panel: #111b26;
   --blue: #19a7ff;
   --green: #35e69a;
-  --red: #ff4545;
   --text: #eaf3fc;
 }
 
 * {
   box-sizing: border-box;
-  -webkit-user-select: none;
   user-select: none;
+  -webkit-user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -28,19 +26,15 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse at center, #142536 0%, #080d13 75%);
+  background: radial-gradient(ellipse at center, #142536, #080d13 75%);
   color: var(--text);
   font-family: Arial, sans-serif;
   overflow: hidden;
-  touch-action: manipulation;
 }
 
 button {
   font: inherit;
   touch-action: none;
-  -webkit-touch-callout: none;
-  user-select: none;
 }
 
 /* BARRE DU HAUT */
@@ -52,7 +46,7 @@ header {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid #25394b;
-  background: rgba(8, 13, 19, .85);
+  background: rgba(8,13,19,.85);
   position: relative;
   z-index: 2;
 }
@@ -87,7 +81,7 @@ header {
   font-weight: bold;
 }
 
-/* DISPOSITION PRINCIPALE */
+/* DISPOSITION */
 
 main {
   height: calc(100vh - 58px);
@@ -135,6 +129,8 @@ main {
   box-shadow: 0 2px 0 #071019, 0 4px 12px #0008;
 }
 
+/* CAMERA */
+
 .camera-panel {
   flex: 1;
   max-width: 650px;
@@ -164,14 +160,13 @@ main {
   padding: 7px 0 2px;
 }
 
-/* ANIMATION DE DEMARRAGE */
+/* INTRODUCTION */
 
 #intro {
   position: fixed;
   inset: 0;
   z-index: 10;
-  background:
-    radial-gradient(ellipse at center, #172d40, #060a10 75%);
+  background: radial-gradient(ellipse at center, #172d40, #060a10 75%);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -210,7 +205,6 @@ main {
 .gauge {
   width: min(330px, 75vw);
   margin-top: 18px;
-  overflow: visible;
 }
 
 .gauge svg {
@@ -279,7 +273,7 @@ main {
   to { opacity: .35; }
 }
 
-/* APPARITION DES COMMANDES */
+/* APPARITION */
 
 header, main {
   opacity: 0;
@@ -291,7 +285,7 @@ header, main {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* PETITS ECRANS */
+/* ECRANS PLUS PETITS */
 
 @media (max-width: 650px) {
   header {
@@ -338,26 +332,12 @@ header, main {
     font-size: 8px;
   }
 }
-
-@media (orientation: portrait) {
-  body::after {
-    content: "Tourne ton téléphone à l'horizontale";
-    position: fixed;
-    bottom: 8px;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 10px;
-    color: #7893aa;
-    pointer-events: none;
-  }
-}
 </style>
 </head>
 
 <body>
 
-<!-- INTRO -->
+<!-- ANIMATION DE DEMARRAGE -->
 
 <div id="intro">
   <div class="intro-logo">EN<span>BOYA</span></div>
@@ -380,6 +360,7 @@ header, main {
 
       <text x="160" y="125" text-anchor="middle"
             class="gauge-number">ENBOYA</text>
+
       <text x="160" y="143" text-anchor="middle"
             class="gauge-unit">SYSTEM START</text>
 
@@ -395,7 +376,7 @@ header, main {
   <div class="loading-text">INITIALISATION...</div>
 </div>
 
-<!-- BARRE DU HAUT -->
+<!-- EN-TETE -->
 
 <header>
   <div class="brand">EN<span>BOYA</span></div>
@@ -406,7 +387,7 @@ header, main {
   </div>
 </header>
 
-<!-- COMMANDES -->
+<!-- INTERFACE PRINCIPALE -->
 
 <main>
 
@@ -430,14 +411,13 @@ header, main {
 </main>
 
 <script>
-/* BLUETOOTH HM-10 */
+/* BLUETOOTH */
 
 const SERVICE_UUID = "0000ffe0-0000-1000-8000-00805f9b34fb";
 const CHARACTERISTIC_UUID = "0000ffe1-0000-1000-8000-00805f9b34fb";
 
 let device = null;
 let characteristic = null;
-let activeButton = null;
 
 const statusText = document.getElementById("status");
 const connectButton = document.getElementById("connect");
@@ -457,8 +437,7 @@ connectButton.addEventListener("click", async () => {
 
     device.addEventListener("gattserverdisconnected", () => {
       characteristic = null;
-      activeButton = null;
-      releaseAllButtons();
+      releaseAllControls();
       updateStatus("Bluetooth déconnecté", "#ff5555");
       connectButton.textContent = "CONNECTER";
     });
@@ -479,7 +458,7 @@ connectButton.addEventListener("click", async () => {
   }
 });
 
-/* ENVOI DES COMMANDES */
+/* ENVOI BLUETOOTH */
 
 async function sendCommand(command) {
   if (!characteristic) return;
@@ -497,69 +476,120 @@ async function sendCommand(command) {
   }
 }
 
-/* BOUTONS */
+/* COMMANDES TACTILES */
 
 const directionButtons = document.querySelectorAll(".direction");
+const pressedPointers = new Map();
 
-function releaseAllButtons() {
+function getActiveCommand() {
+  const active = [...pressedPointers.values()];
+
+  return active.length ? active[active.length - 1] : "S";
+}
+
+function updateTouchCommand() {
+  sendCommand(getActiveCommand());
+
   directionButtons.forEach(button => {
-    button.classList.remove("active");
+    button.classList.toggle(
+      "active",
+      [...pressedPointers.values()].includes(button.dataset.command)
+    );
   });
 }
 
-directionButtons.forEach(button => {
+function releaseAllControls() {
+  pressedPointers.clear();
+  directionButtons.forEach(button => button.classList.remove("active"));
+}
 
-  button.addEventListener("contextmenu", event => {
-    event.preventDefault();
-  });
+directionButtons.forEach(button => {
+  button.addEventListener("contextmenu", event => event.preventDefault());
 
   button.addEventListener("pointerdown", event => {
     event.preventDefault();
 
-    if (!characteristic || activeButton) return;
+    if (!characteristic) return;
 
-    activeButton = button;
-    button.classList.add("active");
+    pressedPointers.set(event.pointerId, button.dataset.command);
     button.setPointerCapture(event.pointerId);
-
-    sendCommand(button.dataset.command);
+    updateTouchCommand();
   });
 
-  function releaseButton(event) {
-    if (activeButton !== button) return;
+  function releasePointer(event) {
+    if (!pressedPointers.has(event.pointerId)) return;
 
-    event.preventDefault();
-
-    button.classList.remove("active");
-    activeButton = null;
-
-    sendCommand("S");
+    pressedPointers.delete(event.pointerId);
+    updateTouchCommand();
   }
 
-  button.addEventListener("pointerup", releaseButton);
-  button.addEventListener("pointercancel", releaseButton);
-  button.addEventListener("lostpointercapture", releaseButton);
+  button.addEventListener("pointerup", releasePointer);
+  button.addEventListener("pointercancel", releasePointer);
+  button.addEventListener("lostpointercapture", releasePointer);
+});
+
+/* COMMANDES AU CLAVIER DU PC */
+
+const keyboardCommands = {
+  "z": "F",
+  "s": "B",
+  "q": "L",
+  "d": "R",
+  " ": "S"
+};
+
+const pressedKeys = new Set();
+
+function updateKeyboardCommand() {
+  if (pressedKeys.size === 0) return;
+
+  const keys = [...pressedKeys];
+  sendCommand(keyboardCommands[keys[keys.length - 1]]);
+}
+
+document.addEventListener("keydown", event => {
+  const key = event.key.toLowerCase();
+
+  if (!(key in keyboardCommands)) return;
+
+  event.preventDefault();
+
+  if (!characteristic || event.repeat) return;
+
+  pressedKeys.add(key);
+  updateKeyboardCommand();
+});
+
+document.addEventListener("keyup", event => {
+  const key = event.key.toLowerCase();
+
+  if (!pressedKeys.has(key)) return;
+
+  event.preventDefault();
+  pressedKeys.delete(key);
+
+  if (pressedKeys.size === 0) {
+    sendCommand("S");
+  } else {
+    updateKeyboardCommand();
+  }
 });
 
 /* ARRET SI LA PAGE PERD LE FOCUS */
 
-window.addEventListener("blur", () => {
-  if (activeButton) {
-    activeButton.classList.remove("active");
-    activeButton = null;
-    sendCommand("S");
-  }
-});
+function stopAllCommands() {
+  releaseAllControls();
+  pressedKeys.clear();
+  sendCommand("S");
+}
+
+window.addEventListener("blur", stopAllCommands);
 
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden && activeButton) {
-    activeButton.classList.remove("active");
-    activeButton = null;
-    sendCommand("S");
-  }
+  if (document.hidden) stopAllCommands();
 });
 
-/* GENERATION DES GRADUATIONS DU COMPTEUR */
+/* GRADUATIONS DU COMPTEUR */
 
 const ticks = document.getElementById("ticks");
 
@@ -591,13 +621,13 @@ for (let i = 0; i <= 20; i++) {
   ticks.appendChild(tick);
 }
 
-/* FIN DE L'ANIMATION */
-
 setTimeout(() => {
   document.querySelectorAll(".tick").forEach(tick => {
     tick.classList.add("lit");
   });
 }, 700);
+
+/* FIN DU DEMARRAGE */
 
 setTimeout(() => {
   document.getElementById("intro").classList.add("finished");
