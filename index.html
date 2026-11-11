@@ -103,7 +103,51 @@ header {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 14px;
+  gap: 10px;
+}
+
+/* PANNEAU VITESSE */
+
+.speed-panel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px;
+  border: 1px solid #28617f;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #142b3c, #09131d);
+  box-shadow: inset 0 1px 1px #ffffff12, 0 0 14px #16a9ff18;
+}
+
+.speed-title {
+  font-size: 9px;
+  font-weight: bold;
+  color: #dff5ff;
+  letter-spacing: 1px;
+  margin-right: 4px;
+}
+
+.speed-button {
+  padding: 8px 10px;
+  border: 1px solid #426174;
+  border-radius: 5px;
+  color: #9bb4c5;
+  background: #101c29;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.speed-button.active {
+  color: white;
+  border-color: var(--cyan);
+  background: linear-gradient(135deg, #087fbd, #075078);
+  box-shadow: 0 0 12px #16a9ff55;
+}
+
+.speed-button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
 }
 
 /* PANNEAU ANTI-COLLISION */
@@ -478,6 +522,21 @@ header, main {
     gap: 7px;
   }
 
+  .speed-panel {
+    gap: 3px;
+    padding: 5px;
+  }
+
+  .speed-title {
+    font-size: 8px;
+    margin-right: 1px;
+  }
+
+  .speed-button {
+    padding: 7px 6px;
+    font-size: 8px;
+  }
+
   .anti-panel {
     gap: 6px;
     padding: 6px 7px;
@@ -628,6 +687,22 @@ header, main {
 
   <div class="header-right">
 
+    <!-- SELECTEUR DE VITESSE -->
+
+    <div class="speed-panel">
+      <span class="speed-title">VITESSE</span>
+
+      <button class="speed-button active" id="speed1" disabled>
+        1 · 50%
+      </button>
+
+      <button class="speed-button" id="speed2" disabled>
+        2 · 100%
+      </button>
+    </div>
+
+    <!-- ANTI-COLLISION -->
+
     <div class="anti-panel">
       <div class="anti-info">
         <span class="anti-title">ANTI-COLLISION</span>
@@ -641,6 +716,8 @@ header, main {
 
       <span id="antiStatus">ACTIVÉ</span>
     </div>
+
+    <!-- CONNEXION -->
 
     <div class="connection">
       <span id="status">Bluetooth déconnecté</span>
@@ -692,6 +769,11 @@ const connectButton = document.getElementById("connect");
 const antiToggle = document.getElementById("antiToggle");
 const antiStatus = document.getElementById("antiStatus");
 
+const speed1 = document.getElementById("speed1");
+const speed2 = document.getElementById("speed2");
+
+let currentSpeed = 1;
+
 function updateStatus(text, color) {
   statusText.textContent = text;
   statusText.style.color = color;
@@ -701,6 +783,15 @@ function updateAntiDisplay(enabled) {
   antiToggle.checked = enabled;
   antiStatus.textContent = enabled ? "ACTIVÉ" : "DÉSACTIVÉ";
   antiStatus.style.color = enabled ? "#35e69a" : "#ffbd55";
+}
+
+/* AFFICHAGE VITESSE */
+
+function updateSpeedDisplay(speed) {
+  currentSpeed = speed;
+
+  speed1.classList.toggle("active", speed === 1);
+  speed2.classList.toggle("active", speed === 2);
 }
 
 /* ENVOI BLUETOOTH */
@@ -728,6 +819,20 @@ function sendCommand(command) {
   return writeQueue;
 }
 
+/* CHANGEMENT DE VITESSE */
+
+async function selectSpeed(speed) {
+  if (!characteristic) return;
+
+  const command = speed === 1 ? "1" : "2";
+
+  await sendCommand(command);
+  updateSpeedDisplay(speed);
+}
+
+speed1.addEventListener("click", () => selectSpeed(1));
+speed2.addEventListener("click", () => selectSpeed(2));
+
 /* CONNEXION */
 
 connectButton.addEventListener("click", async () => {
@@ -747,8 +852,14 @@ connectButton.addEventListener("click", async () => {
     device.addEventListener("gattserverdisconnected", () => {
       characteristic = null;
       stopAllControls();
+
       antiToggle.disabled = true;
+      speed1.disabled = true;
+      speed2.disabled = true;
+
       updateAntiDisplay(true);
+      updateSpeedDisplay(1);
+
       updateStatus("Bluetooth déconnecté", "#ff5555");
       connectButton.textContent = "CONNECTER";
       connectButton.disabled = false;
@@ -765,16 +876,30 @@ connectButton.addEventListener("click", async () => {
     connectButton.textContent = "CONNECTÉ";
     connectButton.disabled = false;
 
-    /* ANTI-COLLISION ACTIVE PAR DEFAUT */
-    updateAntiDisplay(true);
+    /* REGLAGES PAR DEFAUT */
+
     antiToggle.disabled = false;
+    speed1.disabled = false;
+    speed2.disabled = false;
+
+    updateAntiDisplay(true);
+    updateSpeedDisplay(1);
+
+    await sendCommand("1");
     await sendCommand("A");
 
   } catch (error) {
     console.error(error);
+
     characteristic = null;
+
     antiToggle.disabled = true;
+    speed1.disabled = true;
+    speed2.disabled = true;
+
     updateAntiDisplay(true);
+    updateSpeedDisplay(1);
+
     updateStatus("Connexion impossible", "#ff5555");
     connectButton.textContent = "CONNECTER";
     connectButton.disabled = false;
@@ -986,7 +1111,11 @@ setTimeout(() => {
 /* ETAT INITIAL */
 
 updateAntiDisplay(true);
+updateSpeedDisplay(1);
+
 antiToggle.disabled = true;
+speed1.disabled = true;
+speed2.disabled = true;
 </script>
 
 </body>
